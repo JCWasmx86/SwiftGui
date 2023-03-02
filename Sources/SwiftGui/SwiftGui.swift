@@ -16,15 +16,18 @@ public class MyApplication: Application {
 
   public override func onActivate() {
     let win = Window(app: self)
-    let box1 = Box(horizontal: false).append(HeaderBar().packStart(Label("Headerlabel")).titleWidget(
-			TitleBarWidget("Title", "Subtitle")
-    )).append(
+    let box1 = Box(horizontal: false).append(
+      HeaderBar().packStart(Label("Headerlabel")).titleWidget(
+        TitleBarWidget("Title", "Subtitle")
+      )
+    ).append(
       Label("Foo")
     ).append(
       MarkupLabel("<b>Foo</b>")
-    ).append(Button("Click me").handler ({
-    	print("Clicked")
-    }))
+    ).append(
+      Button("Click me").handler({
+        print("Clicked")
+      }))
     win.setChild(box1)
     win.show()
   }

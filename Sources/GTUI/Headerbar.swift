@@ -3,7 +3,7 @@ import Foundation
 
 public class HeaderBar: NativeWidgetPeer {
   public override init() {
-  	super.init()
+    super.init()
     self.nativePtr = gtui_create_headerbar()
   }
 

@@ -3,7 +3,7 @@ import Foundation
 
 open class Application: NativePeer {
   public init(name: NSString) {
-  	super.init()
+    super.init()
     self.nativePtr = gtui_init_application(UnsafePointer<CChar>(name.utf8String))
   }
 

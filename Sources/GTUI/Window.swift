@@ -3,7 +3,7 @@ import CGTUI
 public class Window: NativePeer {
 
   public init(app: Application?) {
-  	super.init()
+    super.init()
     if let addr = app {
       self.nativePtr = gtui_create_window(addr.nativePtr)
     } else {

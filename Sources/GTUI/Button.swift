@@ -2,23 +2,23 @@ import CGTUI
 import Foundation
 
 public class Button: NativeWidgetPeer {
-  var handlers: [() -> ()] = []
+  var handlers: [() -> Void] = []
 
   public init(_ label: NSString) {
-  	super.init()
+    super.init()
     self.nativePtr = gtui_create_button(UnsafePointer<CChar>(label.utf8String))
     let selfAddr = unsafeBitCast(self, to: UInt64.self)
     gtui_button_init_signals(self.nativePtr, selfAddr)
   }
 
-  public func handler(_ handler: @escaping () -> ()) -> Button {
-		self.handlers.append(handler)
-  	return self
+  public func handler(_ handler: @escaping () -> Void) -> Button {
+    self.handlers.append(handler)
+    return self
   }
 
   public func onClick() {
     for handler in self.handlers {
-    	handler()
+      handler()
     }
   }
 }

@@ -165,8 +165,7 @@ gtui_create_button (const char *label)
 }
 
 static uint64_t
-gtui_button_init_signals (uint64_t btn,
-                          uint64_t data)
+gtui_button_init_signals (uint64_t btn, uint64_t data)
 {
   GtkButton *button;
 
@@ -180,9 +179,7 @@ gtui_button_init_signals (uint64_t btn,
 }
 
 static uint64_t
-gtui_create_title_bar_widget (const char *title,
-                              const char *subtitle)
+gtui_create_title_bar_widget (const char *title, const char *subtitle)
 {
-  return (uint64_t) adw_window_title_new (strdup (title),
-                                          strdup (subtitle));
+  return (uint64_t)adw_window_title_new (strdup (title), strdup (subtitle));
 }

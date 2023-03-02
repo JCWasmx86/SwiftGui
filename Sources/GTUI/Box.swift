@@ -2,7 +2,7 @@ import CGTUI
 
 public class Box: NativeWidgetPeer {
   public init(horizontal: Bool = true, spacing: Int = 0) {
-  	super.init()
+    super.init()
     self.nativePtr = gtui_create_box(horizontal ? 1 : 0, Int32(spacing))
   }
 
