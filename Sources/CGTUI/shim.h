@@ -248,3 +248,16 @@ gtui_stringlist_get_selected (uint64_t dropdown, uint64_t list)
 
   return gtk_string_list_get_string (list, gtk_drop_down_get_selected (dropdown));
 }
+
+static char *
+gtui_textview_contents (uint64_t textview)
+{
+  GtkTextIter    start, end;
+  GtkTextBuffer *buffer;
+
+  g_assert (GTK_IS_TEXT_VIEW (textview));
+
+  buffer = gtk_text_view_get_buffer (textview);
+  gtk_text_buffer_get_bounds (buffer, &start, &end);
+  return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+}
