@@ -27,7 +27,8 @@ public class MyApplication: Application {
     ).append(
       Button("Click me").handler({
         print("Clicked")
-      }))
+      })
+    ).append(TextView())
     win.setChild(Scrolled().setChild(box1))
     win.show()
   }

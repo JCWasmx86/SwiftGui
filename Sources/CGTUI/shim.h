@@ -200,3 +200,14 @@ gtui_scrolled_set_child (uint64_t scrolled, uint64_t widget)
 
   gtk_scrolled_window_set_child ((GtkScrolledWindow *)scrolled, (GtkWidget *)widget);
 }
+
+static uint64_t
+gtui_create_textview ()
+{
+  return (uint64_t)gtk_text_view_new ();
+}
+
+static uint64_t
+gtui_textview ()
+{
+}
