@@ -228,3 +228,14 @@ gtui_stringlist_append (uint64_t list, const char *str)
 
   gtk_string_list_take (list, strdup (str));
 }
+
+static void
+gtui_box_remove (uint64_t box, uint64_t widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_BOX (GTK_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_box_remove ((GtkBox *)box, (GtkWidget *)widget);
+}
