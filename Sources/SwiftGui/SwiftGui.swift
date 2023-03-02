@@ -29,6 +29,7 @@ public class MyApplication: Application {
         print("Clicked")
       })
     ).append(TextView())
+      .append(TextDropDown().append("FOO").append("BAR"))
     win.setChild(Scrolled().setChild(box1))
     win.show()
   }

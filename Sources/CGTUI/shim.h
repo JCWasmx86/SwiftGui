@@ -208,6 +208,23 @@ gtui_create_textview ()
 }
 
 static uint64_t
-gtui_textview ()
+gtui_create_stringlist ()
 {
+  return (uint64_t)gtk_string_list_new (NULL);
+}
+
+static uint64_t
+gtui_create_text_dropdown (uint64_t list)
+{
+  g_assert (GTK_IS_STRING_LIST (list));
+
+  return (uint64_t)gtk_drop_down_new (GTK_STRING_LIST (list), NULL);
+}
+
+static uint64_t
+gtui_stringlist_append (uint64_t list, const char *str)
+{
+  g_assert (GTK_IS_STRING_LIST (list));
+
+  gtk_string_list_take (list, strdup (str));
 }
