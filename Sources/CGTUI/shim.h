@@ -261,3 +261,28 @@ gtui_textview_contents (uint64_t textview)
   gtk_text_buffer_get_bounds (buffer, &start, &end);
   return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
 }
+
+static void
+gtui_window_maximize (uint64_t ptr)
+{
+  g_assert_nonnull (ptr);
+  AdwWindow *window = (void *)ptr;
+  g_assert (ADW_IS_WINDOW (window));
+  gtk_window_maximize (GTK_WINDOW (window));
+}
+
+static void
+gtui_set_hexpand (uint64_t widget, gboolean enabled)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  gtk_widget_set_hexpand (GTK_WIDGET (widget), enabled);
+}
+
+static void
+gtui_set_vexpand (uint64_t widget, gboolean enabled)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  gtk_widget_set_vexpand (GTK_WIDGET (widget), enabled);
+}

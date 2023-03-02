@@ -18,4 +18,8 @@ public class Window: NativePeer {
   public func setChild(_ widget: NativeWidgetPeer) {
     gtui_window_set_child(self.nativePtr, widget.nativePtr)
   }
+
+  public func maximize() {
+    gtui_window_maximize(self.nativePtr)
+  }
 }
