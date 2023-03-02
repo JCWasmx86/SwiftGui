@@ -239,3 +239,12 @@ gtui_box_remove (uint64_t box, uint64_t widget)
 
   gtk_box_remove ((GtkBox *)box, (GtkWidget *)widget);
 }
+
+static char *
+gtui_stringlist_get_selected (uint64_t dropdown, uint64_t list)
+{
+  g_assert (GTK_IS_DROP_DOWN (GTK_DROP_DOWN ((void *)dropdown)));
+  g_assert (GTK_IS_STRING_LIST (GTK_STRING_LIST ((void *)list)));
+
+  return gtk_string_list_get_string (list, gtk_drop_down_get_selected (dropdown));
+}

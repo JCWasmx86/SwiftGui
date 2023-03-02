@@ -14,4 +14,9 @@ public class TextDropDown: NativeWidgetPeer {
     gtui_stringlist_append(self.stringListPtr, UnsafePointer<CChar>(string.utf8String))
     return self
   }
+
+  public func selected() -> String {
+    let str = gtui_stringlist_get_selected(self.nativePtr, self.stringListPtr)
+    return String(cString: str!)
+  }
 }
