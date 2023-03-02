@@ -1,0 +1,5 @@
+module CGTUI [system] {
+	header "shim.h"
+	link "adwaita-1"
+	export *
+}
