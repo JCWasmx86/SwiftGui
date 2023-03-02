@@ -183,3 +183,20 @@ gtui_create_title_bar_widget (const char *title, const char *subtitle)
 {
   return (uint64_t)adw_window_title_new (strdup (title), strdup (subtitle));
 }
+
+static uint64_t
+gtui_create_scrolled ()
+{
+  return (uint64_t)gtk_scrolled_window_new ();
+}
+
+static uint64_t
+gtui_scrolled_set_child (uint64_t scrolled, uint64_t widget)
+{
+  g_assert_nonnull (scrolled);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_SCROLLED_WINDOW (GTK_SCROLLED_WINDOW ((void *)scrolled)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_scrolled_window_set_child ((GtkScrolledWindow *)scrolled, (GtkWidget *)widget);
+}

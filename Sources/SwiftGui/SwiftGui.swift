@@ -28,7 +28,7 @@ public class MyApplication: Application {
       Button("Click me").handler({
         print("Clicked")
       }))
-    win.setChild(box1)
+    win.setChild(Scrolled().setChild(box1))
     win.show()
   }
 }
