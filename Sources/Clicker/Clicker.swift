@@ -14,7 +14,7 @@ public class ClickerApplication: Application {
   var n: Int
   public init() {
     self.n = 0
-    super.init(name: "org.swift.Foo")
+    super.init(name: "org.swift.Clicker")
   }
 
   public override func onActivate() {
@@ -25,14 +25,16 @@ public class ClickerApplication: Application {
         TitleBarWidget("Title", "Subtitle")
       )
     ).append(
-      lbl
-    ).append(
-      Button("Click me").handler({
-        self.n += 1
-        lbl.setText("Clicked \(self.n) time(s)" as NSString)
-      })
-    )
-    win.setChild(Scrolled().setChild(box1))
+      Scrolled().setChild(
+        Box(horizontal: false).append(
+          lbl
+        ).append(
+          Button("Click me").handler({
+            self.n += 1
+            lbl.setText("Clicked \(self.n) time(s)" as NSString)
+          })
+        )))
+    win.setChild(box1)
     win.maximize()
     win.show()
   }
