@@ -286,3 +286,11 @@ gtui_set_vexpand (uint64_t widget, gboolean enabled)
 
   gtk_widget_set_vexpand (GTK_WIDGET (widget), enabled);
 }
+
+static void
+gtui_label_set_text (uint64_t widget, const char *text)
+{
+  g_assert (GTK_IS_LABEL (widget));
+
+  gtk_label_set_text (widget, text);
+}

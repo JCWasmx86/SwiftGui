@@ -22,6 +22,9 @@ let package = Package(
     .executableTarget(
       name: "SwiftGui",
       dependencies: ["GTUI"]),
+    .executableTarget(
+      name: "Clicker",
+      dependencies: ["GTUI"]),
     .testTarget(
       name: "SwiftGuiTests",
       dependencies: ["SwiftGui"]),
