@@ -5,7 +5,7 @@ public class ComboRow: ActionRow {
 
   public override init(title: String, subtitle: String) {
     self.stringListPtr = gtui_create_stringlist()
-    super.init(title: title, subtitle: subtitle)
+    super.init()
     self.nativePtr = gtui_create_comborow(self.stringListPtr)
     _ = self.title(title)
     _ = self.subtitle(subtitle)

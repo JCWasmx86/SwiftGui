@@ -1,8 +1,8 @@
 import CGTUI
 
 public class PreferencesWindow: Window {
-  public init(app: Application? = nil, parent: Window? = nil) {
-    super.init(app: app)
+  public init(parent: Window? = nil) {
+    super.init()
     self.nativePtr = gtui_create_preferenceswindow()
     if let parent {
       self.setParent(parent)

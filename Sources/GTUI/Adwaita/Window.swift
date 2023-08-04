@@ -15,6 +15,10 @@ public class Window: NativePeer {
     }
   }
 
+  override init() {
+    super.init()
+  }
+
   public func show() {
     gtui_show_window(self.nativePtr)
   }

@@ -21,7 +21,7 @@ public class MyApplication: Application {
   }
 
   func aboutWindow(win: Window) -> AboutWindow {
-    AboutWindow(app: self, parent: win)
+    AboutWindow(parent: win)
       .generalData(title: "SwiftGui", icon: .default(icon: .applicationXExecutable), developer: "JCWasmx86", version: "main")
       .website(url: "https://github.com/JCWasmx86/SwiftGui")
       .issue(url: "https://github.com/JCWasmx86/SwiftGui/issues")
@@ -151,7 +151,7 @@ public class MyApplication: Application {
 
   public override func onActivate() {
     let win = createWindow()
-    let preferencesWindow = PreferencesWindow(app: self, parent: win)
+    let preferencesWindow = PreferencesWindow(parent: win)
     let group = PreferencesGroup(name: "A Group", description: "Description")
     preferencesWindow.setDefaultSize(width: 500, height: 400)
     preferencesWindow.add(

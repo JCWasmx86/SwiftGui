@@ -1,8 +1,8 @@
 import CGTUI
 
 public class AboutWindow: Window {
-  public init(app: Application? = nil, parent: Window? = nil) {
-    super.init(app: app)
+  public init(parent: Window? = nil) {
+    super.init()
     self.nativePtr = gtui_create_aboutwindow()
     if let parent {
       self.setParent(parent)

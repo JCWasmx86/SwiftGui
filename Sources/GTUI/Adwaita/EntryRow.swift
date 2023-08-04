@@ -6,6 +6,9 @@ public class EntryRow: PreferencesRow {
     self.nativePtr = gtui_create_entryrow()
     _ = self.title(title)
   }
+  override init() {
+    super.init()
+  }
 
   public func addPrefix(_ prefix: NativeWidgetPeer) -> EntryRow {
     gtui_entryrow_add_prefix(self.nativePtr, prefix.nativePtr)
