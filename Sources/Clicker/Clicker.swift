@@ -27,13 +27,13 @@ public class ClickerApplication: Application {
     ).append(
       Scrolled().setChild(
         Box(horizontal: false).append(
-          lbl
+          lbl.padding(10, .bottom)
         ).append(
           Button("Click me").handler({
             self.n += 1
-            lbl.setText("Clicked \(self.n) time(s)" as NSString)
+            lbl.setText("Clicked \(self.n) time(s)")
           })
-        )))
+        ).padding(10)).vexpand(true))
     win.setChild(box1)
     win.maximize()
     win.show()

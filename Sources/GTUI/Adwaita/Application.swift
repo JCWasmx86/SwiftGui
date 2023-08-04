@@ -2,9 +2,9 @@ import CGTUI
 import Foundation
 
 open class Application: NativePeer {
-  public init(name: NSString) {
+  public init(name: String) {
     super.init()
-    self.nativePtr = gtui_init_application(UnsafePointer<CChar>(name.utf8String))
+    self.nativePtr = gtui_init_application(name.cString)
   }
 
   open func onActivate() {
@@ -13,6 +13,11 @@ open class Application: NativePeer {
   public func run() {
     gtui_run_application(self.nativePtr, unsafeBitCast(self, to: UInt64.self))
   }
+  
+  public func quit() {
+    gtui_quit_application(self.nativePtr)
+  }
+    
 }
 
 @_cdecl("application_on_activate_cb")

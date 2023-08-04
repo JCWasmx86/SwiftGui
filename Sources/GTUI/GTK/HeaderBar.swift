@@ -23,7 +23,7 @@ public class HeaderBar: NativeWidgetPeer {
   }
 
   public func showTitleButtons(_ enabled: Bool) -> HeaderBar {
-    gtui_headerbar_set_show_title_buttons(self.nativePtr, enabled ? 1 : 0)
+    gtui_headerbar_set_show_title_buttons(self.nativePtr, enabled.cBool)
     return self
   }
 }
