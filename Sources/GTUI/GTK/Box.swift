@@ -4,7 +4,7 @@ public class Box: NativeWidgetPeer {
   private var peers: [NativeWidgetPeer] = []
   public init(horizontal: Bool = true, spacing: Int = 0) {
     super.init()
-    self.nativePtr = gtui_create_box(horizontal ? 1 : 0, Int32(spacing))
+    self.nativePtr = gtui_create_box(horizontal.cBool, spacing.cInt)
   }
 
   public func append(_ widget: NativeWidgetPeer) -> Box {

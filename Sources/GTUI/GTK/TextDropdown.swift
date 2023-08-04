@@ -10,8 +10,8 @@ public class TextDropDown: NativeWidgetPeer {
     self.nativePtr = gtui_create_text_dropdown(self.stringListPtr)
   }
 
-  public func append(_ string: NSString) -> TextDropDown {
-    gtui_stringlist_append(self.stringListPtr, UnsafePointer<CChar>(string.utf8String))
+  public func append(_ string: String) -> TextDropDown {
+    gtui_stringlist_append(self.stringListPtr, string.cString)
     return self
   }
 
