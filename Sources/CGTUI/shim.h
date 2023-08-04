@@ -256,7 +256,6 @@ gtui_statuspage_set_title (uint64_t statuspage, const char *title)
   g_assert_nonnull (title);
   g_assert (ADW_IS_STATUS_PAGE (ADW_STATUS_PAGE ((void *)statuspage)));
 
-
   adw_status_page_set_title (statuspage, strdup (title));
 }
 
@@ -267,7 +266,6 @@ gtui_statuspage_set_description (uint64_t statuspage, const char *description)
   g_assert_nonnull (description);
   g_assert (ADW_IS_STATUS_PAGE (ADW_STATUS_PAGE ((void *)statuspage)));
 
-
   adw_status_page_set_description (statuspage, strdup (description));
 }
 
@@ -277,7 +275,6 @@ gtui_statuspage_set_icon_name (uint64_t statuspage, const char *icon)
   g_assert_nonnull (statuspage);
   g_assert_nonnull (icon);
   g_assert (ADW_IS_STATUS_PAGE (ADW_STATUS_PAGE ((void *)statuspage)));
-
 
   adw_status_page_set_icon_name (statuspage, strdup (icon));
 }
@@ -352,7 +349,7 @@ gtui_toastoverlay_add_toast (uint64_t toastoverlay, uint64_t toast)
   g_assert_nonnull (toastoverlay);
   g_assert_nonnull (toast);
   g_assert (ADW_IS_TOAST_OVERLAY (ADW_TOAST_OVERLAY ((void *)toastoverlay)));
-  g_assert (ADW_IS_TOAST (ADW_TOAST ((void*)toast)));
+  g_assert (ADW_IS_TOAST (ADW_TOAST ((void *)toast)));
 
   adw_toast_overlay_add_toast (toastoverlay, toast);
 }
@@ -413,7 +410,8 @@ gtui_create_avatar (int size, const char *text, gboolean show_initials)
 }
 
 static void
-gtui_avatar_set_icon_name (uint64_t avatar, const char* icon_name) {
+gtui_avatar_set_icon_name (uint64_t avatar, const char *icon_name)
+{
   g_assert_nonnull (avatar);
   g_assert_nonnull (icon_name);
   g_assert (ADW_IS_AVATAR (ADW_AVATAR ((void *)avatar)));
@@ -453,7 +451,12 @@ gtui_messagedialog_present (uint64_t messagedialog)
 }
 
 static void
-gtui_messagedialog_add_response (uint64_t messagedialog, const char *id, const char *label, int appearance, gboolean enabled, int type)
+gtui_messagedialog_add_response (uint64_t    messagedialog,
+                                 const char *id,
+                                 const char *label,
+                                 int         appearance,
+                                 gboolean    enabled,
+                                 int         type)
 {
   g_assert_nonnull (messagedialog);
   g_assert_nonnull (id);
@@ -462,26 +465,28 @@ gtui_messagedialog_add_response (uint64_t messagedialog, const char *id, const c
 
   AdwResponseAppearance adwAppearance = ADW_RESPONSE_DEFAULT;
 
-  switch (appearance) {
-  case 1:
-    adwAppearance = ADW_RESPONSE_SUGGESTED;
-    break;
-  case 2:
-    adwAppearance = ADW_RESPONSE_DESTRUCTIVE;
-    break;
-  }
+  switch (appearance)
+    {
+    case 1:
+      adwAppearance = ADW_RESPONSE_SUGGESTED;
+      break;
+    case 2:
+      adwAppearance = ADW_RESPONSE_DESTRUCTIVE;
+      break;
+    }
 
   adw_message_dialog_add_response (messagedialog, id, label);
   adw_message_dialog_set_response_appearance (messagedialog, id, adwAppearance);
   adw_message_dialog_set_response_enabled (messagedialog, id, enabled);
 
-  switch (type) {
-  case 1:
-    adw_message_dialog_set_close_response (messagedialog, id);
-    break;
-  case 2:
-    adw_message_dialog_set_default_response (messagedialog, id);
-  }
+  switch (type)
+    {
+    case 1:
+      adw_message_dialog_set_close_response (messagedialog, id);
+      break;
+    case 2:
+      adw_message_dialog_set_default_response (messagedialog, id);
+    }
 }
 
 static void
@@ -730,14 +735,18 @@ gtui_create_aboutwindow ()
 }
 
 static void
-gtui_aboutwindow_set_general_data (uint64_t aboutwindow, const char *title, const char *icon, const char *developer, const char *version)
+gtui_aboutwindow_set_general_data (uint64_t    aboutwindow,
+                                   const char *title,
+                                   const char *icon,
+                                   const char *developer,
+                                   const char *version)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (title);
   g_assert_nonnull (icon);
   g_assert_nonnull (developer);
   g_assert_nonnull (version);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_application_name (aboutwindow, title);
   adw_about_window_set_application_icon (aboutwindow, icon);
@@ -750,7 +759,7 @@ gtui_aboutwindow_set_website (uint64_t aboutwindow, const char *website)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (website);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_website (aboutwindow, website);
 }
@@ -760,7 +769,7 @@ gtui_aboutwindow_set_support (uint64_t aboutwindow, const char *url)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (url);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_support_url (aboutwindow, url);
 }
@@ -770,7 +779,7 @@ gtui_aboutwindow_set_issue (uint64_t aboutwindow, const char *url)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (url);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_issue_url (aboutwindow, url);
 }
@@ -781,7 +790,7 @@ gtui_aboutwindow_add_link (uint64_t aboutwindow, const char *title, const char *
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (title);
   g_assert_nonnull (url);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_add_link (aboutwindow, title, url);
 }
@@ -791,7 +800,7 @@ gtui_aboutwindow_set_artists (uint64_t aboutwindow, const char **artists)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (artists);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_artists (aboutwindow, artists);
 }
@@ -801,7 +810,7 @@ gtui_aboutwindow_set_designers (uint64_t aboutwindow, const char **designers)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (designers);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_designers (aboutwindow, designers);
 }
@@ -811,7 +820,7 @@ gtui_aboutwindow_set_developers (uint64_t aboutwindow, const char **developers)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (developers);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_developers (aboutwindow, developers);
 }
@@ -821,7 +830,7 @@ gtui_aboutwindow_set_documenters (uint64_t aboutwindow, const char **documenters
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (documenters);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_documenters (aboutwindow, documenters);
 }
@@ -832,7 +841,7 @@ gtui_aboutwindow_add_credit_section (uint64_t aboutwindow, const char *name, con
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (name);
   g_assert_nonnull (people);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_add_credit_section (aboutwindow, name, people);
 }
@@ -842,7 +851,7 @@ gtui_aboutwindow_set_copyright (uint64_t aboutwindow, const char *copyright)
 {
   g_assert_nonnull (aboutwindow);
   g_assert_nonnull (copyright);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   adw_about_window_set_copyright (aboutwindow, copyright);
 }
@@ -851,59 +860,60 @@ static void
 gtui_aboutwindow_set_license (uint64_t aboutwindow, int license)
 {
   g_assert_nonnull (aboutwindow);
-  g_assert(ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
+  g_assert (ADW_IS_ABOUT_WINDOW (ADW_ABOUT_WINDOW ((void *)aboutwindow)));
 
   GtkLicense license_type = GTK_LICENSE_UNKNOWN;
 
-  switch (license) {
-  case 1:
-    license = GTK_LICENSE_GPL_2_0;
-    break;
-  case 2:
-    license = GTK_LICENSE_GPL_3_0;
-    break;
-  case 3:
-    license = GTK_LICENSE_LGPL_2_1;
-    break;
-  case 4:
-    license = GTK_LICENSE_LGPL_3_0;
-    break;
-  case 5:
-    license = GTK_LICENSE_BSD;
-    break;
-  case 6:
-    license = GTK_LICENSE_MIT_X11;
-    break;
-  case 7:
-    license = GTK_LICENSE_ARTISTIC;
-    break;
-  case 8:
-    license = GTK_LICENSE_GPL_2_0_ONLY;
-    break;
-  case 9:
-    license = GTK_LICENSE_GPL_3_0_ONLY;
-    break;
-  case 10:
-    license = GTK_LICENSE_LGPL_2_1_ONLY;
-    break;
-  case 11:
-    license = GTK_LICENSE_LGPL_3_0_ONLY;
-    break;
-  case 12:
-    license = GTK_LICENSE_AGPL_3_0;
-    break;
-  case 13:
-    license = GTK_LICENSE_AGPL_3_0_ONLY;
-    break;
-  case 14:
-    license = GTK_LICENSE_BSD_3;
-    break;
-  case 15:
-    license = GTK_LICENSE_APACHE_2_0;
-    break;
-  case 16:
-    license = GTK_LICENSE_MPL_2_0;
-  }
+  switch (license)
+    {
+    case 1:
+      license = GTK_LICENSE_GPL_2_0;
+      break;
+    case 2:
+      license = GTK_LICENSE_GPL_3_0;
+      break;
+    case 3:
+      license = GTK_LICENSE_LGPL_2_1;
+      break;
+    case 4:
+      license = GTK_LICENSE_LGPL_3_0;
+      break;
+    case 5:
+      license = GTK_LICENSE_BSD;
+      break;
+    case 6:
+      license = GTK_LICENSE_MIT_X11;
+      break;
+    case 7:
+      license = GTK_LICENSE_ARTISTIC;
+      break;
+    case 8:
+      license = GTK_LICENSE_GPL_2_0_ONLY;
+      break;
+    case 9:
+      license = GTK_LICENSE_GPL_3_0_ONLY;
+      break;
+    case 10:
+      license = GTK_LICENSE_LGPL_2_1_ONLY;
+      break;
+    case 11:
+      license = GTK_LICENSE_LGPL_3_0_ONLY;
+      break;
+    case 12:
+      license = GTK_LICENSE_AGPL_3_0;
+      break;
+    case 13:
+      license = GTK_LICENSE_AGPL_3_0_ONLY;
+      break;
+    case 14:
+      license = GTK_LICENSE_BSD_3;
+      break;
+    case 15:
+      license = GTK_LICENSE_APACHE_2_0;
+      break;
+    case 16:
+      license = GTK_LICENSE_MPL_2_0;
+    }
 
   adw_about_window_set_license_type (aboutwindow, license);
 }
@@ -979,7 +989,7 @@ gtui_tabview_prepend (uint64_t tabview, uint64_t widget, const char *title)
   AdwTabPage *page = adw_tab_view_prepend (tabview, widget);
   adw_tab_page_set_title (page, title);
 
-  return  page;
+  return page;
 }
 
 static uint64_t
