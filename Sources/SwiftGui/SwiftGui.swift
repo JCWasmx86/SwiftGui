@@ -26,7 +26,7 @@ public class MyApplication: Application {
       .website(url: "https://github.com/JCWasmx86/SwiftGui")
       .issue(url: "https://github.com/JCWasmx86/SwiftGui/issues")
       .developers(["JCWasmx86 https://github.com/JCWasmx86", "david-swift https://github.com/david-swift"])
-      .copyright("© 2023 JCWasmx86")
+      .copyright("© 2023 JCWasmx86, david-swift")
       .license(.gpl3_0)
   }
 
