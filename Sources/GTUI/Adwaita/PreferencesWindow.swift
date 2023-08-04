@@ -4,9 +4,7 @@ public class PreferencesWindow: Window {
   public init(parent: Window? = nil) {
     super.init()
     self.nativePtr = gtui_create_preferenceswindow()
-    if let parent {
-      self.setParent(parent)
-    }
+    if let parent { self.setParent(parent) }
   }
 
   public func add(page: PreferencesPage) {

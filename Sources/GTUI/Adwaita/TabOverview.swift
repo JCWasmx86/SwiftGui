@@ -3,9 +3,7 @@ import CGTUI
 public class TabOverview: NativeWidgetPeer {
   var handler: (() -> UInt64)?
 
-  public var overviewPresented: Bool {
-    gtui_taboverview_get_open(self.nativePtr) == 1
-  }
+  public var overviewPresented: Bool { gtui_taboverview_get_open(self.nativePtr) == 1 }
 
   public override init() {
     super.init()
@@ -25,21 +23,17 @@ public class TabOverview: NativeWidgetPeer {
     return self
   }
 
-  public func showOverview() {
-    gtui_taboverview_set_open(self.nativePtr, true.cBool)
-  }
+  public func showOverview() { gtui_taboverview_set_open(self.nativePtr, true.cBool) }
 
-  public func hideOverview() {
-    gtui_taboverview_set_open(self.nativePtr, false.cBool)
-  }
+  public func hideOverview() { gtui_taboverview_set_open(self.nativePtr, false.cBool) }
 
-  public func onCreateTab() -> UInt64 {
-    handler?() ?? 0
-  }
+  public func onCreateTab() -> UInt64 { handler?() ?? 0 }
 }
 
-@_cdecl("taboverview_on_create_tab_cb")
-func taboverview_on_create_tab_cb(ptr: UnsafeMutableRawPointer, userData: UnsafeMutableRawPointer) -> UInt64 {
+@_cdecl("taboverview_on_create_tab_cb") func taboverview_on_create_tab_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) -> UInt64 {
   let overview = Unmanaged<TabOverview>.fromOpaque(userData).takeUnretainedValue()
   return overview.onCreateTab()
 }

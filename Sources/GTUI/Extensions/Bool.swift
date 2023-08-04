@@ -1,7 +1,3 @@
 import Foundation
 
-extension Bool {
-  var cBool: Int32 {
-    self ? 1 : 0
-  }
-}
+extension Bool { var cBool: Int32 { self ? 1 : 0 } }

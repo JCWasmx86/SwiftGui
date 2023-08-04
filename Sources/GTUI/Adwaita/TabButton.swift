@@ -15,15 +15,13 @@ public class TabButton: NativeWidgetPeer {
     return self
   }
 
-  public func onClick() {
-    for handler in self.handlers {
-      handler()
-    }
-  }
+  public func onClick() { for handler in self.handlers { handler() } }
 }
 
-@_cdecl("tabbutton_on_click_cb")
-func tabbutton_on_click_cb(ptr: UnsafeMutableRawPointer, userData: UnsafeMutableRawPointer) {
+@_cdecl("tabbutton_on_click_cb") func tabbutton_on_click_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) {
   let button = Unmanaged<TabButton>.fromOpaque(userData).takeUnretainedValue()
   button.onClick()
 }

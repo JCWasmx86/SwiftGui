@@ -15,14 +15,10 @@ open class NativeWidgetPeer: NativePeer {
   public func padding(_ padding: Int = 10, _ edges: Set<Edge> = .all) -> NativeWidgetPeer {
     for edge in edges {
       switch edge {
-      case .leading:
-        gtui_set_margin_start(self.nativePtr, padding.cInt)
-      case .trailing:
-        gtui_set_margin_end(self.nativePtr, padding.cInt)
-      case .top:
-        gtui_set_margin_top(self.nativePtr, padding.cInt)
-      case .bottom:
-        gtui_set_margin_bottom(self.nativePtr, padding.cInt)
+      case .leading: gtui_set_margin_start(self.nativePtr, padding.cInt)
+      case .trailing: gtui_set_margin_end(self.nativePtr, padding.cInt)
+      case .top: gtui_set_margin_top(self.nativePtr, padding.cInt)
+      case .bottom: gtui_set_margin_bottom(self.nativePtr, padding.cInt)
       }
     }
     return self
@@ -34,10 +30,6 @@ open class NativeWidgetPeer: NativePeer {
   }
 
   public func frame(maxSize: Int? = nil) -> NativeWidgetPeer {
-    if let maxSize {
-      return Clamp(self).maximumSize(maxSize)
-    } else {
-      return self
-    }
+    if let maxSize { return Clamp(self).maximumSize(maxSize) } else { return self }
   }
 }

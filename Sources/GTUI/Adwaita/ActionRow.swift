@@ -7,9 +7,7 @@ public class ActionRow: PreferencesRow {
     _ = self.title(title)
     _ = self.subtitle(subtitle)
   }
-  override init() {
-    super.init()
-  }
+  override init() { super.init() }
 
   public func subtitle(_ subtitle: String) -> ActionRow {
     gtui_actionrow_set_subtitle(self.nativePtr, subtitle.cString)

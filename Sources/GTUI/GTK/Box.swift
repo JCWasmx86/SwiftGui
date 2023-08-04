@@ -2,6 +2,7 @@ import CGTUI
 
 public class Box: NativeWidgetPeer {
   private var peers: [NativeWidgetPeer] = []
+
   public init(horizontal: Bool = true, spacing: Int = 0) {
     super.init()
     self.nativePtr = gtui_create_box(horizontal.cBool, spacing.cInt)
@@ -20,9 +21,7 @@ public class Box: NativeWidgetPeer {
   }
 
   public func removeAll() -> Box {
-    for p in self.peers {
-      gtui_box_remove(self.nativePtr, p.nativePtr)
-    }
+    for p in self.peers { gtui_box_remove(self.nativePtr, p.nativePtr) }
     self.peers = []
     return self
   }

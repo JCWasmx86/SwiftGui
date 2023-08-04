@@ -19,11 +19,7 @@ public class Carousel: NativeWidgetPeer {
   public func addIndicatorDots(top: Bool = false) -> Box {
     let box = Box(horizontal: false)
     let dots = CarouselIndicatorDots(carousel: self)
-    if top {
-      _ = box.append(dots).append(self)
-    } else {
-      _ = box.append(self).append(dots)
-    }
+    if top { _ = box.append(dots).append(self) } else { _ = box.append(self).append(dots) }
     return box
   }
 }

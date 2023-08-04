@@ -2,9 +2,7 @@ import CGTUI
 
 public class Banner: NativeWidgetPeer {
   var handlers: [() -> Void] = []
-  public var isRevealed: Bool {
-    gtui_banner_is_revealed(self.nativePtr) != 0
-  }
+  public var isRevealed: Bool { gtui_banner_is_revealed(self.nativePtr) != 0 }
 
   public init(_ title: String) {
     super.init()
@@ -23,23 +21,17 @@ public class Banner: NativeWidgetPeer {
     return self
   }
 
-  public func onClick() {
-    for handler in handlers {
-      handler()
-    }
-  }
+  public func onClick() { for handler in handlers { handler() } }
 
-  public func show() {
-    gtui_banner_set_revealed(self.nativePtr, true.cBool)
-  }
+  public func show() { gtui_banner_set_revealed(self.nativePtr, true.cBool) }
 
-  public func hide() {
-    gtui_banner_set_revealed(self.nativePtr, false.cBool)
-  }
+  public func hide() { gtui_banner_set_revealed(self.nativePtr, false.cBool) }
 }
 
-@_cdecl("banner_on_click_cb")
-func banner_on_click_cb(ptr: UnsafeMutableRawPointer, userData: UnsafeMutableRawPointer) {
+@_cdecl("banner_on_click_cb") func banner_on_click_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) {
   let banner = Unmanaged<Banner>.fromOpaque(userData).takeUnretainedValue()
   banner.onClick()
 }

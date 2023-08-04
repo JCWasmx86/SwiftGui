@@ -6,10 +6,8 @@ public enum Icon {
 
   public var string: String {
     switch self {
-    case let .default(icon):
-      return icon.string
-    case let .custom(name):
-      return name
+    case let .default(icon): return icon.string
+    case let .custom(name): return name
     }
   }
 
@@ -729,11 +727,7 @@ public enum Icon {
       var string = rawValue
       if !string.hasPrefix("org.") {
         let result = string.map { letter in
-          if letter.isUppercase {
-            return "-\(letter)"
-          } else {
-            return "\(letter)"
-          }
+          if letter.isUppercase { return "-\(letter)" } else { return "\(letter)" }
         }.joined()
         string = result.lowercased()
       }

@@ -7,7 +7,5 @@ public class Label: NativeWidgetPeer {
     self.nativePtr = gtui_create_label(text.cString)
   }
 
-  public func setText(_ text: String) {
-    gtui_label_set_text(self.nativePtr, text.cString)
-  }
+  public func setText(_ text: String) { gtui_label_set_text(self.nativePtr, text.cString) }
 }

@@ -4,13 +4,19 @@ public class AboutWindow: Window {
   public init(parent: Window? = nil) {
     super.init()
     self.nativePtr = gtui_create_aboutwindow()
-    if let parent {
-      self.setParent(parent)
-    }
+    if let parent { self.setParent(parent) }
   }
 
-  public func generalData(title: String, icon: Icon, developer: String, version: String) -> AboutWindow {
-    gtui_aboutwindow_set_general_data(self.nativePtr, title.cString, icon.string.cString, developer.cString, version.cString)
+  public func generalData(title: String, icon: Icon, developer: String, version: String)
+    -> AboutWindow
+  {
+    gtui_aboutwindow_set_general_data(
+      self.nativePtr,
+      title.cString,
+      icon.string.cString,
+      developer.cString,
+      version.cString
+    )
     return self
   }
 

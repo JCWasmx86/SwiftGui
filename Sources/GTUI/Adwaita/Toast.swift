@@ -20,19 +20,15 @@ public class Toast: NativePeer {
     return self
   }
 
-  public func dismiss() {
-    gtui_toast_dismiss(self.nativePtr)
-  }
+  public func dismiss() { gtui_toast_dismiss(self.nativePtr) }
 
-  public func onClick() {
-    for handler in handlers {
-      handler()
-    }
-  }
+  public func onClick() { for handler in handlers { handler() } }
 }
 
-@_cdecl("toast_on_click_cb")
-func toast_on_click_cb(ptr: UnsafeMutableRawPointer, userData: UnsafeMutableRawPointer) {
+@_cdecl("toast_on_click_cb") func toast_on_click_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) {
   let toast = Unmanaged<Toast>.fromOpaque(userData).takeUnretainedValue()
   toast.onClick()
 }

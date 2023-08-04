@@ -12,10 +12,7 @@ public class Button: NativeWidgetPeer {
   }
   public convenience init(_ label: String? = nil, icon: Icon) {
     self.init(label ?? "")
-    gtui_button_set_child(
-      self.nativePtr,
-      ButtonContent(icon: icon, label: label).nativePtr
-    )
+    gtui_button_set_child(self.nativePtr, ButtonContent(icon: icon, label: label).nativePtr)
   }
 
   public func handler(_ handler: @escaping () -> Void) -> Button {
@@ -23,15 +20,13 @@ public class Button: NativeWidgetPeer {
     return self
   }
 
-  public func onClick() {
-    for handler in self.handlers {
-      handler()
-    }
-  }
+  public func onClick() { for handler in self.handlers { handler() } }
 }
 
-@_cdecl("button_on_click_cb")
-func button_on_click_cb(ptr: UnsafeMutableRawPointer, userData: UnsafeMutableRawPointer) {
+@_cdecl("button_on_click_cb") func button_on_click_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) {
   let button = Unmanaged<Button>.fromOpaque(userData).takeUnretainedValue()
   button.onClick()
 }
