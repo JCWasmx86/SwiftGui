@@ -1345,6 +1345,22 @@ gtui_set_size_request (uint64_t widget, int width, int height)
   gtk_widget_set_size_request (GTK_WIDGET (widget), width, height);
 }
 
+static int
+gtui_get_width (uint64_t widget)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  return gtk_widget_get_width (widget);
+}
+
+static int
+gtui_get_height (uint64_t widget)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  return gtk_widget_get_height (widget);
+}
+
 static void
 gtui_label_set_text (uint64_t widget, const char *text)
 {

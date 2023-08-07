@@ -1,6 +1,9 @@
 import CGTUI
 
 open class NativeWidgetPeer: NativePeer {
+  public var height: Int { .init(gtui_get_height(self.nativePtr)) }
+
+  public var width: Int { .init(gtui_get_width(self.nativePtr)) }
 
   public func hexpand(_ enabled: Bool = true) -> NativeWidgetPeer {
     gtui_set_hexpand(self.nativePtr, enabled.cBool)
