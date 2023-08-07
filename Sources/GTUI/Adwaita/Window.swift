@@ -37,8 +37,8 @@ public class Window: NativePeer {
 
   public func close() { gtui_window_close(self.nativePtr) }
 
-  public func setDefaultSize(width: Int, height: Int) {
-    gtui_window_set_default_size(self.nativePtr, width.cInt, height.cInt)
+  public func setDefaultSize(width: Int?, height: Int?) {
+    gtui_window_set_default_size(self.nativePtr, width?.cInt ?? -1, height?.cInt ?? -1)
   }
 
   public func setResizability(_ resizable: Bool) {
