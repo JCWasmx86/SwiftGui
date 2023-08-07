@@ -20,9 +20,15 @@ public class Box: NativeWidgetPeer {
     return self
   }
 
-  public func removeAll() -> Box {
-    for p in self.peers { gtui_box_remove(self.nativePtr, p.nativePtr) }
-    self.peers = []
+  public func removeAll() -> Box { removeWidgets(self.peers) }
+
+  public func removeWidgets(_ widgets: [NativeWidgetPeer]) -> Box {
+    for p in widgets {
+      gtui_box_remove(self.nativePtr, p.nativePtr)
+      self.peers = self.peers.filter { $0.nativePtr != p.nativePtr }
+    }
     return self
   }
+
+  public func getContent() -> [NativeWidgetPeer] { return peers }
 }
