@@ -151,9 +151,12 @@ public class MyApplication: Application {
     let passwordEntryRow = PasswordEntryRow(title: "Password Entry Row")
     preferencesWindow.add(
       page: .init(name: "World", icon: .default(icon: .faceCool), description: "Cool!").add(
-        group: .init(name: "Entries", description: "Description").add(entryRow).add(
-          passwordEntryRow
-        ).headerSuffix(
+        group: .init(name: "Entries", description: "Description").add(
+          entryRow.submitHandler {
+            print(entryRow.contents())
+            entryRow.setContents("")
+          }
+        ).add(passwordEntryRow).headerSuffix(
           Button("Print").handler {
             print("\(entryRow.contents()), \(passwordEntryRow.contents())")
           }.padding()

@@ -10,4 +10,8 @@ public class TextView: NativeWidgetPeer {
     let contents = gtui_textview_contents(self.nativePtr)
     return String(cString: contents!)
   }
+
+  public func setContents(_ text: String) {
+    gtui_editable_set_contents(self.nativePtr, text.cString)
+  }
 }
