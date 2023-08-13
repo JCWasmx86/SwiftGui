@@ -183,6 +183,17 @@ gtui_headerbar_pack_end (uint64_t bar, uint64_t widget)
 }
 
 static void
+gtui_headerbar_remove (uint64_t bar, uint64_t widget)
+{
+  g_assert_nonnull (bar);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_header_bar_remove ((GtkHeaderBar *)bar, (GtkWidget *)widget);
+}
+
+static void
 gtui_headerbar_set_show_title_buttons (uint64_t bar, gboolean enabled)
 {
   g_assert_nonnull (bar);
@@ -979,6 +990,17 @@ gtui_carousel_prepend (uint64_t carousel, uint64_t widget)
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
   adw_carousel_prepend (carousel, widget);
+}
+
+static void
+gtui_carousel_remove (uint64_t carousel, uint64_t widget)
+{
+  g_assert_nonnull (carousel);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_CAROUSEL (ADW_CAROUSEL ((void *)carousel)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_carousel_remove (carousel, widget);
 }
 
 static uint64_t
