@@ -30,7 +30,10 @@ public class MyApplication: Application {
     var toastOverlay = ToastOverlay(Label(""))
     let carousel = Carousel().append(
       StatusPage().title("Hello").description("Page 1").hexpand().frame(minHeight: 300)
-    ).append(StatusPage().title("World").description("Page 2").hexpand())
+    ).append(StatusPage().title("World").description("Page 2").hexpand()).insert(
+      Label("Inserted Page"),
+      at: 0
+    )
     let banner = Banner("Okay, so let's close the window.").buttonLabel("Close").buttonHandler {
       win.close()
     }
@@ -105,8 +108,9 @@ public class MyApplication: Application {
           .packEnd(Button(icon: .default(icon: .tabNew)).handler { _ = createTab() }).packEnd(
             TabButton(view: tabView).handler { contentView.showOverview() }
           )
-      ).append(TabBar(view: tabView)).append(
-        tabView.append(title: "Initial View", self.toastOverlay(win: win))
+      ).append(tabView.append(title: "Initial View", self.toastOverlay(win: win))).insert(
+        TabBar(view: tabView),
+        at: 1
       ),
       view: tabView
     )

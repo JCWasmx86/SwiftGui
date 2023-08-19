@@ -1,6 +1,6 @@
 import CGTUI
 
-public class Carousel: NativeWidgetPeer, Container {
+public class Carousel: NativeWidgetPeer, InsertableContainer {
   private var peers: [NativeWidgetPeer] = []
 
   public override init() {
@@ -16,7 +16,13 @@ public class Carousel: NativeWidgetPeer, Container {
 
   public func prepend(_ widget: NativeWidgetPeer) -> Self {
     gtui_carousel_prepend(self.nativePtr, widget.nativePtr)
-    self.peers.append(widget)
+    self.peers.insert(widget, at: 0)
+    return self
+  }
+
+  public func insert(_ widget: NativeWidgetPeer, at index: Int) -> Self {
+    gtui_carousel_insert(self.nativePtr, widget.nativePtr, index.cInt)
+    self.peers.insert(widget, at: 0)
     return self
   }
 

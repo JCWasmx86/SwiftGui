@@ -106,6 +106,17 @@ gtui_box_prepend (uint64_t box, uint64_t widget)
 }
 
 static void
+gtui_box_insert_after (uint64_t box, uint64_t widget, uint64_t previous_widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_BOX (GTK_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_box_insert_child_after ((GtkBox *)box, (GtkWidget *)widget, (GtkWidget *)previous_widget);
+}
+
+static void
 gtui_window_set_child (uint64_t window, uint64_t widget)
 {
   g_assert_nonnull (window);
@@ -990,6 +1001,17 @@ gtui_carousel_prepend (uint64_t carousel, uint64_t widget)
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
   adw_carousel_prepend (carousel, widget);
+}
+
+static void
+gtui_carousel_insert (uint64_t carousel, uint64_t widget, int position)
+{
+  g_assert_nonnull (carousel);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_CAROUSEL (ADW_CAROUSEL ((void *)carousel)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_carousel_insert (carousel, widget, position);
 }
 
 static void
