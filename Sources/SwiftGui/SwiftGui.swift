@@ -123,30 +123,40 @@ public class MyApplication: Application {
     let win = createWindow()
     let preferencesWindow = PreferencesWindow(parent: win)
     let group = PreferencesGroup(name: "A Group", description: "Description")
+    let content1 = helloButton().padding()
+    let content2 = Label("Hello, world!")
+    let stack = Stack().append(content1, transition: .slideUp).append(
+      content2,
+      transition: .slideUp
+    )
     preferencesWindow.setDefaultSize(width: 500, height: 400)
     preferencesWindow.add(
       page: .init(name: "Hello", icon: .default(icon: .daytimeSunrise), description: "Hello world?")
         .add(
-          group: group.add(
-            ActionRow(title: "ActionRow", subtitle: "Description").addSuffix(
-              helloButton().padding()
-            )
-          ).add(
-            ComboRow(title: "ComboRow", subtitle: "Description").append("Hello").append("World")
-          ).headerSuffix(
-            Button("Add").handler {
-              _ = group.add(
-                ActionRow(
-                  title: String(Int.random(in: 0...1000)),
-                  subtitle: String(Int.random(in: 0...100000))
+          group: group.add(ActionRow(title: "ActionRow", subtitle: "Description").addSuffix(stack))
+            .add(
+              ComboRow(title: "ComboRow", subtitle: "Description").append("Hello").append("World")
+            ).headerSuffix(
+              Button("Add").handler {
+                _ = group.add(
+                  ActionRow(
+                    title: String(Int.random(in: 0...1000)),
+                    subtitle: String(Int.random(in: 0...100000))
+                  )
                 )
-              )
-            }.padding()
-          )
+              }.padding()
+            )
         ).add(
           group: .init(name: "Another Group", description: "Description").add(
             ExpanderRow(title: "ExpanderRow", subtitle: "Description").addRow(
-              ActionRow(title: "Row 1", subtitle: "Description").addSuffix(helloButton().padding())
+              ActionRow(title: "Row 1", subtitle: "Description").addSuffix(
+                Button("Toggle Stack").handler {
+                  switch stack.getVisible()?.0.nativePtr {
+                  case content1.nativePtr: stack.setVisible(content2)
+                  default: stack.setVisible(content1)
+                  }
+                }.padding()
+              )
             ).addRow(ActionRow(title: "Row 2", subtitle: "Description"))
           )
         )

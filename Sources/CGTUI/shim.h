@@ -1218,6 +1218,117 @@ gtui_buttoncontent_set_icon (uint64_t button, const char *icon)
 }
 
 static uint64_t
+gtui_create_stack ()
+{
+  return (uint64_t)gtk_stack_new ();
+}
+
+static void
+gtui_stack_add_child (uint64_t stack, uint64_t child)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  gtk_stack_add_child (stack, child);
+}
+
+static void
+gtui_stack_set_visible_child (uint64_t stack, uint64_t child, int transition)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  GtkStackTransitionType gtk_transition = GTK_STACK_TRANSITION_TYPE_NONE;
+
+  switch (transition)
+    {
+    case 1:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_CROSSFADE;
+      break;
+    case 2:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_RIGHT;
+      break;
+    case 3:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT;
+      break;
+    case 4:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_UP;
+      break;
+    case 5:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_DOWN;
+      break;
+    case 6:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT;
+      break;
+    case 7:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN;
+      break;
+    case 8:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_UP;
+      break;
+    case 9:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_DOWN;
+      break;
+    case 10:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_LEFT;
+      break;
+    case 11:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_RIGHT;
+      break;
+    case 12:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_UP;
+      break;
+    case 13:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_DOWN;
+      break;
+    case 14:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_LEFT;
+      break;
+    case 15:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_RIGHT;
+      break;
+    case 16:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_UP_DOWN;
+      break;
+    case 17:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_DOWN_UP;
+      break;
+    case 18:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_LEFT_RIGHT;
+      break;
+    case 19:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_RIGHT_LEFT;
+      break;
+    case 20:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_LEFT;
+      break;
+    case 21:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_RIGHT;
+      break;
+    case 22:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_LEFT_RIGHT;
+      break;
+    }
+  gtk_stack_set_transition_type (stack, gtk_transition);
+  gtk_stack_set_visible_child (stack, child);
+}
+
+static void
+gtui_stack_remove (uint64_t stack, uint64_t child)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  gtk_stack_remove (stack, child);
+}
+
+static uint64_t
 gtui_create_textview ()
 {
   return (uint64_t)gtk_text_view_new ();
