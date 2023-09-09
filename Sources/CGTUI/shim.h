@@ -244,6 +244,16 @@ gtui_button_set_child (uint64_t button, uint64_t widget)
   gtk_button_set_child (button, widget);
 }
 
+static void
+gtui_button_set_label (uint64_t button, const char *label)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_BUTTON (GTK_BUTTON ((void *)button)));
+
+  gtk_button_set_label (button, strdup (label));
+}
+
 static uint64_t
 gtui_create_title_bar_widget (const char *title, const char *subtitle)
 {
