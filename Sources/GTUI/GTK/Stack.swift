@@ -23,9 +23,10 @@ public class Stack: NativeWidgetPeer {
     return self
   }
 
-  public func setVisible(_ child: NativeWidgetPeer) {
+  public func setVisible(_ child: NativeWidgetPeer, transition: Transition? = nil) {
     if let peer = peers.first(where: { $0.0.nativePtr == child.nativePtr }) {
-      gtui_stack_set_visible_child(self.nativePtr, child.nativePtr, peer.1.rawValue.cInt)
+      let transition = transition ?? peer.1
+      gtui_stack_set_visible_child(self.nativePtr, child.nativePtr, transition.rawValue.cInt)
       self.activePeer = peer
     }
   }
