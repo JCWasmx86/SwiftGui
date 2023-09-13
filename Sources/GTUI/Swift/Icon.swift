@@ -732,7 +732,7 @@ public enum Icon {
         string = result.lowercased()
       }
       string = string.replacingOccurrences(of: "_plus_", with: "+")
-      string = string.replacing("_", with: "-")
+      string = string.replacingOccurrences(of: "_", with: "-")
       return string + "-symbolic"
     }
   }

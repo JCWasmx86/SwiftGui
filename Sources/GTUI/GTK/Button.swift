@@ -3,6 +3,7 @@ import Foundation
 
 public class Button: NativeWidgetPeer {
   var handlers: [() -> Void] = []
+  var content: ButtonContent?
 
   public init(_ label: String) {
     super.init()
@@ -12,13 +13,18 @@ public class Button: NativeWidgetPeer {
   }
   public convenience init(_ label: String? = nil, icon: Icon) {
     self.init(label ?? "")
-    gtui_button_set_child(self.nativePtr, ButtonContent(icon: icon, label: label).nativePtr)
+    content = ButtonContent(icon: icon, label: label)
+    if let content { gtui_button_set_child(self.nativePtr, content.nativePtr) }
   }
 
   public func handler(_ handler: @escaping () -> Void) -> Button {
     self.handlers.append(handler)
     return self
   }
+
+  public func setLabel(_ text: String) { gtui_button_set_label(self.nativePtr, text.cString) }
+
+  public func getContent() -> ButtonContent? { content }
 
   public func onClick() { for handler in self.handlers { handler() } }
 }

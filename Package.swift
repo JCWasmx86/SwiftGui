@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "SwiftGui",
+  platforms: [.macOS(.v10_13)],
   products: [.library(name: "GTUI", targets: ["GTUI"])],
   dependencies: [
     // Dependencies declare other packages that this package depends on.

@@ -30,7 +30,10 @@ public class MyApplication: Application {
     var toastOverlay = ToastOverlay(Label(""))
     let carousel = Carousel().append(
       StatusPage().title("Hello").description("Page 1").hexpand().frame(minHeight: 300)
-    ).append(StatusPage().title("World").description("Page 2").hexpand())
+    ).append(StatusPage().title("World").description("Page 2").hexpand()).insert(
+      Label("Inserted Page"),
+      at: 0
+    )
     let banner = Banner("Okay, so let's close the window.").buttonLabel("Close").buttonHandler {
       win.close()
     }
@@ -105,8 +108,9 @@ public class MyApplication: Application {
           .packEnd(Button(icon: .default(icon: .tabNew)).handler { _ = createTab() }).packEnd(
             TabButton(view: tabView).handler { contentView.showOverview() }
           )
-      ).append(TabBar(view: tabView)).append(
-        tabView.append(title: "Initial View", self.toastOverlay(win: win))
+      ).append(tabView.append(title: "Initial View", self.toastOverlay(win: win))).insert(
+        TabBar(view: tabView),
+        at: 1
       ),
       view: tabView
     )
@@ -119,30 +123,40 @@ public class MyApplication: Application {
     let win = createWindow()
     let preferencesWindow = PreferencesWindow(parent: win)
     let group = PreferencesGroup(name: "A Group", description: "Description")
+    let content1 = helloButton().padding()
+    let content2 = Label("Hello, world!")
+    let stack = Stack().append(content1, transition: .slideUp).append(
+      content2,
+      transition: .slideUp
+    )
     preferencesWindow.setDefaultSize(width: 500, height: 400)
     preferencesWindow.add(
       page: .init(name: "Hello", icon: .default(icon: .daytimeSunrise), description: "Hello world?")
         .add(
-          group: group.add(
-            ActionRow(title: "ActionRow", subtitle: "Description").addSuffix(
-              helloButton().padding()
-            )
-          ).add(
-            ComboRow(title: "ComboRow", subtitle: "Description").append("Hello").append("World")
-          ).headerSuffix(
-            Button("Add").handler {
-              _ = group.add(
-                ActionRow(
-                  title: String(Int.random(in: 0...1000)),
-                  subtitle: String(Int.random(in: 0...100000))
+          group: group.add(ActionRow(title: "ActionRow", subtitle: "Description").addSuffix(stack))
+            .add(
+              ComboRow(title: "ComboRow", subtitle: "Description").append("Hello").append("World")
+            ).headerSuffix(
+              Button("Add").handler {
+                _ = group.add(
+                  ActionRow(
+                    title: String(Int.random(in: 0...1000)),
+                    subtitle: String(Int.random(in: 0...100000))
+                  )
                 )
-              )
-            }.padding()
-          )
+              }.padding()
+            )
         ).add(
           group: .init(name: "Another Group", description: "Description").add(
             ExpanderRow(title: "ExpanderRow", subtitle: "Description").addRow(
-              ActionRow(title: "Row 1", subtitle: "Description").addSuffix(helloButton().padding())
+              ActionRow(title: "Row 1", subtitle: "Description").addSuffix(
+                Button("Toggle Stack").handler {
+                  switch stack.getVisible()?.0.nativePtr {
+                  case content1.nativePtr: stack.setVisible(content2)
+                  default: stack.setVisible(content1)
+                  }
+                }.padding()
+              )
             ).addRow(ActionRow(title: "Row 2", subtitle: "Description"))
           )
         )
@@ -151,9 +165,12 @@ public class MyApplication: Application {
     let passwordEntryRow = PasswordEntryRow(title: "Password Entry Row")
     preferencesWindow.add(
       page: .init(name: "World", icon: .default(icon: .faceCool), description: "Cool!").add(
-        group: .init(name: "Entries", description: "Description").add(entryRow).add(
-          passwordEntryRow
-        ).headerSuffix(
+        group: .init(name: "Entries", description: "Description").add(
+          entryRow.submitHandler {
+            print(entryRow.contents())
+            entryRow.setContents("")
+          }
+        ).add(passwordEntryRow).headerSuffix(
           Button("Print").handler {
             print("\(entryRow.contents()), \(passwordEntryRow.contents())")
           }.padding()

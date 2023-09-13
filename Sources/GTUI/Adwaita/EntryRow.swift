@@ -1,9 +1,13 @@
 import CGTUI
 
 public class EntryRow: PreferencesRow {
+  var handlers: [() -> Void] = []
+
   public init(title: String) {
     super.init()
     self.nativePtr = gtui_create_entryrow()
+    let selfAddr = unsafeBitCast(self, to: UInt64.self)
+    gtui_entryrow_init_signals(self.nativePtr, selfAddr)
     _ = self.title(title)
   }
   override init() { super.init() }
@@ -18,8 +22,28 @@ public class EntryRow: PreferencesRow {
     return self
   }
 
+  public func submitHandler(_ handler: @escaping () -> Void) -> EntryRow {
+    self.handlers.append(handler)
+    gtui_entryrow_set_show_apply_button(self.nativePtr, true.cBool)
+    return self
+  }
+
   public func contents() -> String {
     let contents = gtui_editable_contents(self.nativePtr)
     return String(cString: contents!)
   }
+
+  public func setContents(_ text: String) {
+    gtui_editable_set_contents(self.nativePtr, text.cString)
+  }
+
+  public func onSubmit() { for handler in handlers { handler() } }
+}
+
+@_cdecl("entryrow_on_submit_cb") func entryrow_on_submit_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) {
+  let entryrow = Unmanaged<EntryRow>.fromOpaque(userData).takeUnretainedValue()
+  entryrow.onSubmit()
 }

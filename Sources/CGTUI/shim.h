@@ -12,6 +12,8 @@ banner_on_click_cb (void *, void *);
 static void
 button_on_click_cb (void *, void *);
 static void
+entryrow_on_submit_cb (void *, void *);
+static void
 messagedialog_on_click_cb (void *, void *, void *);
 static void
 splitbutton_on_click_cb (void *, void *);
@@ -104,6 +106,17 @@ gtui_box_prepend (uint64_t box, uint64_t widget)
 }
 
 static void
+gtui_box_insert_after (uint64_t box, uint64_t widget, uint64_t previous_widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_BOX (GTK_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_box_insert_child_after ((GtkBox *)box, (GtkWidget *)widget, (GtkWidget *)previous_widget);
+}
+
+static void
 gtui_window_set_child (uint64_t window, uint64_t widget)
 {
   g_assert_nonnull (window);
@@ -181,6 +194,17 @@ gtui_headerbar_pack_end (uint64_t bar, uint64_t widget)
 }
 
 static void
+gtui_headerbar_remove (uint64_t bar, uint64_t widget)
+{
+  g_assert_nonnull (bar);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_header_bar_remove ((GtkHeaderBar *)bar, (GtkWidget *)widget);
+}
+
+static void
 gtui_headerbar_set_show_title_buttons (uint64_t bar, gboolean enabled)
 {
   g_assert_nonnull (bar);
@@ -218,6 +242,16 @@ gtui_button_set_child (uint64_t button, uint64_t widget)
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
   gtk_button_set_child (button, widget);
+}
+
+static void
+gtui_button_set_label (uint64_t button, const char *label)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_BUTTON (GTK_BUTTON ((void *)button)));
+
+  gtk_button_set_label (button, strdup (label));
 }
 
 static uint64_t
@@ -691,6 +725,20 @@ gtui_create_entryrow ()
   return (uint64_t)adw_entry_row_new ();
 }
 
+static uint64_t
+gtui_entryrow_init_signals (uint64_t er, uint64_t data)
+{
+  GtkButton *entryrow;
+
+  g_assert_nonnull (er);
+  g_assert_nonnull (data);
+  g_assert (ADW_IS_ENTRY_ROW (ADW_ENTRY_ROW ((void *)er)));
+
+  entryrow = ADW_ENTRY_ROW (er);
+  swift_retain (data);
+  g_signal_connect (entryrow, "apply", G_CALLBACK (entryrow_on_submit_cb), (void *)data);
+}
+
 static void
 gtui_entryrow_add_prefix (uint64_t entryrow, uint64_t widget)
 {
@@ -713,6 +761,15 @@ gtui_entryrow_add_suffix (uint64_t entryrow, uint64_t widget)
   adw_entry_row_add_suffix (entryrow, widget);
 }
 
+static void
+gtui_entryrow_set_show_apply_button (uint64_t entryrow, gboolean visibility)
+{
+  g_assert_nonnull (entryrow);
+  g_assert (ADW_IS_ENTRY_ROW (ADW_ENTRY_ROW ((void *)entryrow)));
+
+  adw_entry_row_set_show_apply_button (entryrow, visibility);
+}
+
 static uint64_t
 gtui_create_passwordentryrow ()
 {
@@ -726,6 +783,16 @@ gtui_editable_contents (uint64_t editable)
   g_assert (GTK_IS_EDITABLE (GTK_EDITABLE ((void *)editable)));
 
   return gtk_editable_get_text (editable);
+}
+
+static void
+gtui_editable_set_contents (uint64_t editable, const char *contents)
+{
+  g_assert_nonnull (editable);
+  g_assert_nonnull (contents);
+  g_assert (GTK_IS_EDITABLE (GTK_EDITABLE ((void *)editable)));
+
+  return gtk_editable_set_text (editable, contents);
 }
 
 static uint64_t
@@ -946,6 +1013,28 @@ gtui_carousel_prepend (uint64_t carousel, uint64_t widget)
   adw_carousel_prepend (carousel, widget);
 }
 
+static void
+gtui_carousel_insert (uint64_t carousel, uint64_t widget, int position)
+{
+  g_assert_nonnull (carousel);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_CAROUSEL (ADW_CAROUSEL ((void *)carousel)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_carousel_insert (carousel, widget, position);
+}
+
+static void
+gtui_carousel_remove (uint64_t carousel, uint64_t widget)
+{
+  g_assert_nonnull (carousel);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_CAROUSEL (ADW_CAROUSEL ((void *)carousel)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_carousel_remove (carousel, widget);
+}
+
 static uint64_t
 gtui_create_carouselindicatordots (uint64_t carousel)
 {
@@ -1136,6 +1225,117 @@ gtui_buttoncontent_set_icon (uint64_t button, const char *icon)
   g_assert (ADW_IS_BUTTON_CONTENT (ADW_BUTTON_CONTENT (button)));
 
   adw_button_content_set_icon_name (button, icon);
+}
+
+static uint64_t
+gtui_create_stack ()
+{
+  return (uint64_t)gtk_stack_new ();
+}
+
+static void
+gtui_stack_add_child (uint64_t stack, uint64_t child)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  gtk_stack_add_child (stack, child);
+}
+
+static void
+gtui_stack_set_visible_child (uint64_t stack, uint64_t child, int transition)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  GtkStackTransitionType gtk_transition = GTK_STACK_TRANSITION_TYPE_NONE;
+
+  switch (transition)
+    {
+    case 1:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_CROSSFADE;
+      break;
+    case 2:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_RIGHT;
+      break;
+    case 3:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT;
+      break;
+    case 4:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_UP;
+      break;
+    case 5:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_DOWN;
+      break;
+    case 6:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT;
+      break;
+    case 7:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN;
+      break;
+    case 8:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_UP;
+      break;
+    case 9:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_DOWN;
+      break;
+    case 10:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_LEFT;
+      break;
+    case 11:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_RIGHT;
+      break;
+    case 12:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_UP;
+      break;
+    case 13:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_DOWN;
+      break;
+    case 14:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_LEFT;
+      break;
+    case 15:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_UNDER_RIGHT;
+      break;
+    case 16:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_UP_DOWN;
+      break;
+    case 17:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_DOWN_UP;
+      break;
+    case 18:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_LEFT_RIGHT;
+      break;
+    case 19:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_OVER_RIGHT_LEFT;
+      break;
+    case 20:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_LEFT;
+      break;
+    case 21:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_RIGHT;
+      break;
+    case 22:
+      gtk_transition = GTK_STACK_TRANSITION_TYPE_ROTATE_LEFT_RIGHT;
+      break;
+    }
+  gtk_stack_set_transition_type (stack, gtk_transition);
+  gtk_stack_set_visible_child (stack, child);
+}
+
+static void
+gtui_stack_remove (uint64_t stack, uint64_t child)
+{
+  g_assert_nonnull (stack);
+  g_assert_nonnull (child);
+  g_assert (GTK_IS_STACK (GTK_STACK (stack)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (child)));
+
+  gtk_stack_remove (stack, child);
 }
 
 static uint64_t
@@ -1343,6 +1543,22 @@ gtui_set_size_request (uint64_t widget, int width, int height)
   g_assert (GTK_IS_WIDGET (widget));
 
   gtk_widget_set_size_request (GTK_WIDGET (widget), width, height);
+}
+
+static int
+gtui_get_width (uint64_t widget)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  return gtk_widget_get_width (widget);
+}
+
+static int
+gtui_get_height (uint64_t widget)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+
+  return gtk_widget_get_height (widget);
 }
 
 static void
