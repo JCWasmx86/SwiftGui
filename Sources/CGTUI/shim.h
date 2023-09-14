@@ -23,6 +23,8 @@ static void
 tabbutton_on_click_cb (void *, void *);
 static void
 toast_on_click_cb (void *, void *);
+static gboolean
+window_close_cb (void *, void *);
 
 static uint64_t
 gtui_init_application (const char *name)
@@ -65,6 +67,20 @@ gtui_create_window (uint64_t app)
   AdwWindow *window = adw_window_new ();
   g_object_set_property (window, "application", &value);
   return (uint64_t)window;
+}
+
+static void
+gtui_window_init_signals (uint64_t win, uint64_t data)
+{
+  GtkWindow *window;
+
+  g_assert_nonnull (win);
+  g_assert_nonnull (data);
+  g_assert (GTK_IS_WINDOW (GTK_WINDOW ((void *)win)));
+
+  window = GTK_WINDOW (win);
+  swift_retain (data);
+  g_signal_connect (window, "close-request", G_CALLBACK (window_close_cb), (void *)data);
 }
 
 static void

@@ -3,6 +3,7 @@ import CGTUI
 public class Window: NativePeer {
 
   public var isMaximized: Bool { gtui_window_is_maximized(self.nativePtr) != 0 }
+  private var closeHandler: (() -> Bool)?
 
   public init(app: Application?) {
     super.init()
@@ -11,6 +12,8 @@ public class Window: NativePeer {
     } else {
       self.nativePtr = gtui_create_window(0)
     }
+    let selfAddr = unsafeBitCast(self, to: UInt64.self)
+    gtui_window_init_signals(self.nativePtr, selfAddr)
   }
 
   override init() { super.init() }
@@ -48,4 +51,16 @@ public class Window: NativePeer {
   public func setDeletability(_ deletable: Bool) {
     gtui_window_set_deletability(self.nativePtr, deletable.cBool)
   }
+
+  public func observeHide(_ run: @escaping () -> Bool) { self.closeHandler = run }
+
+  func onHide() -> Bool { self.closeHandler?() ?? false }
+}
+
+@_cdecl("window_close_cb") func window_close_cb(
+  ptr: UnsafeMutableRawPointer,
+  userData: UnsafeMutableRawPointer
+) -> Int32 {
+  let window = Unmanaged<Window>.fromOpaque(userData).takeUnretainedValue()
+  return window.onHide().cBool
 }

@@ -116,6 +116,10 @@ public class MyApplication: Application {
     )
     win.setChild(contentView)
     win.setDefaultSize(width: 700, height: 500)
+    win.observeHide {
+      print("Close Window")
+      return false
+    }
     return win
   }
 
