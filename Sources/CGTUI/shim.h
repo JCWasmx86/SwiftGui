@@ -173,7 +173,7 @@ gtui_create_markup_label (const char *label)
 static uint64_t
 gtui_create_headerbar ()
 {
-  return (uint64_t)gtk_header_bar_new ();
+  return (uint64_t)adw_header_bar_new ();
 }
 
 static void
@@ -181,10 +181,10 @@ gtui_headerbar_set_title_widget (uint64_t bar, uint64_t widget)
 {
   g_assert_nonnull (bar);
   g_assert_nonnull (widget);
-  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (ADW_IS_HEADER_BAR (ADW_HEADER_BAR ((void *)bar)));
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
-  gtk_header_bar_set_title_widget (bar, widget);
+  adw_header_bar_set_title_widget (bar, widget);
 }
 
 static void
@@ -192,10 +192,10 @@ gtui_headerbar_pack_start (uint64_t bar, uint64_t widget)
 {
   g_assert_nonnull (bar);
   g_assert_nonnull (widget);
-  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (ADW_IS_HEADER_BAR (ADW_HEADER_BAR ((void *)bar)));
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
-  gtk_header_bar_pack_start (bar, widget);
+  adw_header_bar_pack_start (bar, widget);
 }
 
 static void
@@ -203,10 +203,10 @@ gtui_headerbar_pack_end (uint64_t bar, uint64_t widget)
 {
   g_assert_nonnull (bar);
   g_assert_nonnull (widget);
-  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (ADW_IS_HEADER_BAR (ADW_HEADER_BAR ((void *)bar)));
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
-  gtk_header_bar_pack_end (bar, widget);
+  adw_header_bar_pack_end (bar, widget);
 }
 
 static void
@@ -214,19 +214,19 @@ gtui_headerbar_remove (uint64_t bar, uint64_t widget)
 {
   g_assert_nonnull (bar);
   g_assert_nonnull (widget);
-  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (ADW_IS_HEADER_BAR (ADW_HEADER_BAR ((void *)bar)));
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
-  gtk_header_bar_remove ((GtkHeaderBar *)bar, (GtkWidget *)widget);
+  adw_header_bar_remove ((AdwHeaderBar *)bar, (GtkWidget *)widget);
 }
 
 static void
 gtui_headerbar_set_show_title_buttons (uint64_t bar, gboolean enabled)
 {
   g_assert_nonnull (bar);
-  g_assert (GTK_IS_HEADER_BAR (GTK_HEADER_BAR ((void *)bar)));
+  g_assert (ADW_IS_HEADER_BAR (ADW_HEADER_BAR ((void *)bar)));
 
-  gtk_header_bar_set_show_title_buttons (bar, enabled);
+  adw_header_bar_set_show_end_title_buttons (bar, enabled);
 }
 
 static uint64_t
@@ -587,8 +587,7 @@ gtui_create_preferencespage (const char *name, const char *icon, const char *des
   adw_preferences_page_set_title (page, name);
   adw_preferences_page_set_name (page, name);
   adw_preferences_page_set_icon_name (page, icon);
-  // Adw 1.4+
-  // adw_preferences_page_set_description (page, description);
+  adw_preferences_page_set_description (page, description);
 
   return page;
 }
@@ -790,6 +789,247 @@ static uint64_t
 gtui_create_passwordentryrow ()
 {
   return (uint64_t)adw_password_entry_row_new ();
+}
+
+static uint64_t
+gtui_create_switchrow ()
+{
+  return (uint64_t)adw_switch_row_new ();
+}
+
+static gboolean
+gtui_switchrow_get_active (uint64_t switchrow)
+{
+  g_assert_nonnull (switchrow);
+  g_assert (ADW_IS_SWITCH_ROW (ADW_SWITCH_ROW ((void *)switchrow)));
+
+  return adw_switch_row_get_active (switchrow);
+}
+
+static void
+gtui_switchrow_set_active (uint64_t switchrow, gboolean active)
+{
+  g_assert_nonnull (switchrow);
+  g_assert (ADW_IS_SWITCH_ROW (ADW_SWITCH_ROW ((void *)switchrow)));
+
+  adw_switch_row_set_active (switchrow, active);
+}
+
+static uint64_t
+gtui_create_spinrow (double min, double max, double step)
+{
+  return (uint64_t)adw_spin_row_new_with_range (min, max, step);
+}
+
+static void
+gtui_spinrow_set_configuration (uint64_t spinrow, double min, double max, double step)
+{
+  g_assert_nonnull (spinrow);
+  g_assert (ADW_IS_SPIN_ROW (ADW_SPIN_ROW ((void *)spinrow)));
+
+  adw_spin_row_configure (spinrow, gtk_adjustment_new (0, min, max, step, step, 0), 0, 0);
+}
+
+static double
+gtui_spinrow_get_value (uint64_t spinrow)
+{
+  g_assert_nonnull (spinrow);
+  g_assert (ADW_IS_SPIN_ROW (ADW_SPIN_ROW ((void *)spinrow)));
+
+  return adw_spin_row_get_value (spinrow);
+}
+
+static void
+gtui_spinrow_set_value (uint64_t spinrow, double value)
+{
+  g_assert_nonnull (spinrow);
+  g_assert (ADW_IS_SPIN_ROW (ADW_SPIN_ROW ((void *)spinrow)));
+
+  adw_spin_row_set_value (spinrow, value);
+}
+
+static uint64_t
+gtui_create_navigationview ()
+{
+  return (uint64_t)adw_navigation_view_new ();
+}
+
+static uint64_t
+gtui_navigationview_add (uint64_t navigationview, uint64_t widget, const char *title)
+{
+  g_assert_nonnull (navigationview);
+  g_assert_nonnull (widget);
+  g_assert_nonnull (title);
+  g_assert (ADW_IS_NAVIGATION_VIEW (ADW_NAVIGATION_VIEW ((void *)navigationview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  AdwNavigationPage *navigationpage = adw_navigation_page_new (widget, title);
+  adw_navigation_view_push (navigationview, navigationpage);
+  return (uint64_t)navigationpage;
+}
+
+static void
+gtui_navigationview_remove (uint64_t navigationview, uint64_t widget, gboolean pop)
+{
+  g_assert_nonnull (navigationview);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_NAVIGATION_VIEW (ADW_NAVIGATION_VIEW ((void *)navigationview)));
+  g_assert (ADW_IS_NAVIGATION_PAGE (ADW_NAVIGATION_PAGE ((void *)widget)));
+
+  adw_navigation_view_remove (navigationview, widget);
+
+  if (pop)
+    {
+      adw_navigation_view_pop (navigationview);
+    }
+}
+
+static uint64_t
+gtui_create_navigationsplitview ()
+{
+  return (uint64_t)adw_navigation_split_view_new ();
+}
+
+static void
+gtui_navigationsplitview_set_sidebar (uint64_t navigationsplitview, uint64_t sidebar, const char *title)
+{
+  g_assert_nonnull (navigationsplitview);
+  g_assert_nonnull (sidebar);
+  g_assert_nonnull (title);
+  g_assert (ADW_IS_NAVIGATION_SPLIT_VIEW (ADW_NAVIGATION_SPLIT_VIEW ((void *)navigationsplitview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)sidebar)));
+
+  AdwNavigationPage *navigationpage = adw_navigation_page_new (sidebar, title);
+  adw_navigation_split_view_set_sidebar (navigationsplitview, navigationpage);
+}
+
+static void
+gtui_navigationsplitview_set_content (uint64_t navigationsplitview, uint64_t content, const char *title)
+{
+  g_assert_nonnull (navigationsplitview);
+  g_assert_nonnull (content);
+  g_assert_nonnull (title);
+  g_assert (ADW_IS_NAVIGATION_SPLIT_VIEW (ADW_NAVIGATION_SPLIT_VIEW ((void *)navigationsplitview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)content)));
+
+  AdwNavigationPage *navigationpage = adw_navigation_page_new (content, title);
+  adw_navigation_split_view_set_content (navigationsplitview, navigationpage);
+}
+
+static uint64_t
+gtui_create_overlaysplitview ()
+{
+  return (uint64_t)adw_overlay_split_view_new ();
+}
+
+static void
+gtui_overlaysplitview_set_sidebar (uint64_t overlaysplitview, uint64_t sidebar)
+{
+  g_assert_nonnull (overlaysplitview);
+  g_assert_nonnull (sidebar);
+  g_assert (ADW_IS_OVERLAY_SPLIT_VIEW (ADW_OVERLAY_SPLIT_VIEW ((void *)overlaysplitview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)sidebar)));
+
+  adw_overlay_split_view_set_sidebar (overlaysplitview, sidebar);
+}
+
+static void
+gtui_overlaysplitview_set_content (uint64_t overlaysplitview, uint64_t content)
+{
+  g_assert_nonnull (overlaysplitview);
+  g_assert_nonnull (content);
+  g_assert (ADW_IS_OVERLAY_SPLIT_VIEW (ADW_OVERLAY_SPLIT_VIEW ((void *)overlaysplitview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)content)));
+
+  adw_overlay_split_view_set_content (overlaysplitview, content);
+}
+
+static uint64_t
+gtui_create_toolbarview (uint64_t content)
+{
+  g_assert_nonnull (content);
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)content)));
+
+  AdwToolbarView *toolbarview = adw_toolbar_view_new ();
+  adw_toolbar_view_set_content (toolbarview, content);
+
+  return (uint64_t)toolbarview;
+}
+
+static void
+gtui_toolbarview_add_bottom_bar (uint64_t toolbarview, uint64_t bottom_bar)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert_nonnull (bottom_bar);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)bottom_bar)));
+
+  adw_toolbar_view_add_bottom_bar (toolbarview, bottom_bar);
+}
+
+static void
+gtui_toolbarview_add_top_bar (uint64_t toolbarview, uint64_t top_bar)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert_nonnull (top_bar);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)top_bar)));
+
+  adw_toolbar_view_add_top_bar (toolbarview, top_bar);
+}
+
+static void
+gtui_toolbarview_set_reveal_bottom_bar (uint64_t toolbarview, gboolean revealed)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+
+  adw_toolbar_view_set_reveal_bottom_bars (toolbarview, revealed);
+}
+
+static void
+gtui_toolbarview_set_reveal_top_bar (uint64_t toolbarview, gboolean revealed)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+
+  adw_toolbar_view_set_reveal_top_bars (toolbarview, revealed);
+}
+
+static AdwToolbarStyle
+gtui_convert_number_to_toolbar_style (int number)
+{
+  AdwToolbarStyle style = ADW_TOOLBAR_FLAT;
+
+  switch (number)
+    {
+    case 1:
+      style = ADW_TOOLBAR_RAISED;
+      break;
+    case 2:
+      style = ADW_TOOLBAR_RAISED_BORDER;
+      break;
+    }
+
+  return style;
+}
+
+static void
+gtui_toolbarview_set_top_bar_style (uint64_t toolbarview, int style)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+
+  adw_toolbar_view_set_top_bar_style (toolbarview, gtui_convert_number_to_toolbar_style (style));
+}
+
+static void
+gtui_toolbarview_set_bottom_bar_style (uint64_t toolbarview, int style)
+{
+  g_assert_nonnull (toolbarview);
+  g_assert (ADW_IS_TOOLBAR_VIEW (ADW_TOOLBAR_VIEW ((void *)toolbarview)));
+
+  adw_toolbar_view_set_bottom_bar_style (toolbarview, gtui_convert_number_to_toolbar_style (style));
 }
 
 static char *
