@@ -35,4 +35,9 @@ open class NativeWidgetPeer: NativePeer {
   public func frame(maxSize: Int? = nil) -> NativeWidgetPeer {
     if let maxSize { return Clamp(self).maximumSize(maxSize) } else { return self }
   }
+
+  public func addStyle(_ style: String) -> NativeWidgetPeer {
+    gtui_add_css_class(self.nativePtr, style.cString)
+    return self
+  }
 }

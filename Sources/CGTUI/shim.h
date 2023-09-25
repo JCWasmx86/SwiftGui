@@ -25,6 +25,8 @@ static void
 toast_on_click_cb (void *, void *);
 static gboolean
 window_close_cb (void *, void *);
+static void
+listbox_on_select_row_cb (void *, void *, void *);
 
 static uint64_t
 gtui_init_application (const char *name)
@@ -130,6 +132,89 @@ gtui_box_insert_after (uint64_t box, uint64_t widget, uint64_t previous_widget)
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
   gtk_box_insert_child_after ((GtkBox *)box, (GtkWidget *)widget, (GtkWidget *)previous_widget);
+}
+
+static uint64_t
+gtui_create_listbox ()
+{
+  return (uint64_t)gtk_list_box_new ();
+}
+
+static void
+gtui_listbox_init_signals (uint64_t bx, uint64_t data)
+{
+  GtkListBox *box;
+
+  g_assert_nonnull (bx);
+  g_assert_nonnull (data);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)bx)));
+
+  box = GTK_LIST_BOX (bx);
+  swift_retain (data);
+  g_signal_connect (box, "row-selected", G_CALLBACK (listbox_on_select_row_cb), (void *)data);
+
+  gtk_list_box_set_selection_mode (box, GTK_SELECTION_BROWSE);
+}
+
+static void
+gtui_listbox_append (uint64_t box, uint64_t widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_list_box_append ((GtkListBox *)box, (GtkWidget *)widget);
+}
+
+static void
+gtui_listbox_prepend (uint64_t box, uint64_t widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_list_box_prepend ((GtkListBox *)box, (GtkWidget *)widget);
+}
+
+static void
+gtui_listbox_insert (uint64_t box, uint64_t widget, int position)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_list_box_insert ((GtkListBox *)box, (GtkWidget *)widget, position);
+}
+
+static uint64_t
+gtui_listbox_get_selected_row (uint64_t box)
+{
+  g_assert_nonnull (box);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+
+  return (uint64_t)gtk_list_box_get_selected_row ((GtkListBox *)box);
+}
+
+static void
+gtui_listbox_select_row (uint64_t box, int index)
+{
+  g_assert_nonnull (box);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+
+  GtkListBoxRow *row = gtk_list_box_get_row_at_index (box, index);
+  gtk_list_box_select_row (box, row);
+}
+
+static uint64_t
+gtk_listboxrow_get_child (uint64_t row)
+{
+  g_assert_nonnull (row);
+  g_assert (GTK_IS_LIST_BOX_ROW (GTK_LIST_BOX_ROW ((void *)row)));
+
+  return (uint64_t)gtk_list_box_row_get_child (row);
 }
 
 static void
@@ -1633,6 +1718,17 @@ gtui_box_remove (uint64_t box, uint64_t widget)
   gtk_box_remove ((GtkBox *)box, (GtkWidget *)widget);
 }
 
+static void
+gtui_listbox_remove (uint64_t box, uint64_t widget)
+{
+  g_assert_nonnull (box);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_LIST_BOX (GTK_LIST_BOX ((void *)box)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_list_box_remove ((GtkListBox *)box, (GtkWidget *)widget);
+}
+
 static char *
 gtui_stringlist_get_selected (uint64_t dropdown, uint64_t list)
 {
@@ -1815,6 +1911,13 @@ gtui_get_height (uint64_t widget)
   g_assert (GTK_IS_WIDGET (widget));
 
   return gtk_widget_get_height (widget);
+}
+
+static void
+gtui_add_css_class (uint64_t widget, const char *css_class)
+{
+  g_assert (GTK_IS_WIDGET (widget));
+  gtk_widget_add_css_class (widget, css_class);
 }
 
 static void

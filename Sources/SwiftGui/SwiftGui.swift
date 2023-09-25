@@ -112,13 +112,21 @@ public class MyApplication: Application {
         ).addTopBar(TabBar(view: tabView)).topBarStyle(.raisedBorder),
       view: tabView
     )
+    let listBox = ListBox()
     let splitView = NavigationSplitView().content(
       NavigationView().add(contentView, title: "Test").add(
         ToolbarView(StatusPage().title("Navigation View")).addTopBar(HeaderBar()),
         title: "Navigation Page"
       ),
       title: "Test"
-    ).sidebar(ToolbarView(StatusPage().title("Sidebar")).addTopBar((HeaderBar())), title: "Sidebar")
+    ).sidebar(
+      ToolbarView(
+        listBox.append(Label("Hello")).append(Label("World")).sidebarStyle().handler {
+          print(listBox.getSelectedRow())
+        }
+      ).addTopBar((HeaderBar())),
+      title: "Sidebar"
+    )
     win.setChild(splitView)
     win.setDefaultSize(width: 700, height: 500)
     win.observeHide {
