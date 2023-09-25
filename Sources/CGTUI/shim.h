@@ -1857,6 +1857,47 @@ gtui_set_vexpand (uint64_t widget, gboolean enabled)
   gtk_widget_set_vexpand (GTK_WIDGET (widget), enabled);
 }
 
+static GtkAlign
+gtui_get_align (int number)
+{
+  GtkAlign align = GTK_ALIGN_FILL;
+  switch (number)
+    {
+    case 1:
+      align = GTK_ALIGN_START;
+      break;
+    case 2:
+      align = GTK_ALIGN_END;
+      break;
+    case 3:
+      align = GTK_ALIGN_CENTER;
+      break;
+    case 4:
+      align = GTK_ALIGN_BASELINE_FILL;
+      break;
+    case 5:
+      align = GTK_ALIGN_BASELINE_CENTER;
+      break;
+    }
+  return align;
+}
+
+static void
+gtui_set_halign (uint64_t widget, int align)
+{
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (widget)));
+  gtk_widget_set_halign (widget, gtui_get_align (align));
+}
+
+static void
+gtui_set_valign (uint64_t widget, int align)
+{
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET (widget)));
+  gtk_widget_set_valign (widget, gtui_get_align (align));
+}
+
 static void
 gtui_set_margin_start (uint64_t widget, int margin)
 {

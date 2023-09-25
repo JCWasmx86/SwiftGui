@@ -121,9 +121,9 @@ public class MyApplication: Application {
       title: "Test"
     ).sidebar(
       ToolbarView(
-        listBox.append(Label("Hello")).append(Label("World")).sidebarStyle().handler {
-          print(listBox.getSelectedRow())
-        }
+        listBox.append(Label("Hello").halign(.start).padding()).append(
+          Label("World").halign(.start).padding()
+        ).sidebarStyle().handler { print(listBox.getSelectedRow()) }
       ).addTopBar((HeaderBar())),
       title: "Sidebar"
     )

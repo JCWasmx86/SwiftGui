@@ -15,6 +15,16 @@ open class NativeWidgetPeer: NativePeer {
     return self
   }
 
+  public func halign(_ alignment: Alignment) -> NativeWidgetPeer {
+    gtui_set_halign(self.nativePtr, alignment.rawValue.cInt)
+    return self
+  }
+
+  public func valign(_ alignment: Alignment) -> NativeWidgetPeer {
+    gtui_set_valign(self.nativePtr, alignment.rawValue.cInt)
+    return self
+  }
+
   public func padding(_ padding: Int = 10, _ edges: Set<Edge> = .all) -> NativeWidgetPeer {
     for edge in edges {
       switch edge {
