@@ -17,7 +17,9 @@ public class ListBox: NativeWidgetPeer, InsertableContainer {
       self.nativePtr = nativePtr
     }
 
-    func getChild() -> UInt64 { gtk_listboxrow_get_child(self.nativePtr) }
+    func getChild() -> UInt64? {
+      if self.nativePtr != 0 { return gtk_listboxrow_get_child(self.nativePtr) } else { return nil }
+    }
   }
 
   public func insert(_ widget: NativeWidgetPeer, at index: Int) -> Self {
