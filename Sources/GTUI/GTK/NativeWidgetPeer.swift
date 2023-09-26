@@ -15,6 +15,16 @@ open class NativeWidgetPeer: NativePeer {
     return self
   }
 
+  public func halign(_ alignment: Alignment) -> NativeWidgetPeer {
+    gtui_set_halign(self.nativePtr, alignment.rawValue.cInt)
+    return self
+  }
+
+  public func valign(_ alignment: Alignment) -> NativeWidgetPeer {
+    gtui_set_valign(self.nativePtr, alignment.rawValue.cInt)
+    return self
+  }
+
   public func padding(_ padding: Int = 10, _ edges: Set<Edge> = .all) -> NativeWidgetPeer {
     for edge in edges {
       switch edge {
@@ -34,5 +44,10 @@ open class NativeWidgetPeer: NativePeer {
 
   public func frame(maxSize: Int? = nil) -> NativeWidgetPeer {
     if let maxSize { return Clamp(self).maximumSize(maxSize) } else { return self }
+  }
+
+  public func addStyle(_ style: String) -> NativeWidgetPeer {
+    gtui_add_css_class(self.nativePtr, style.cString)
+    return self
   }
 }

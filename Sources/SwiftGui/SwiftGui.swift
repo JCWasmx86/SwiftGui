@@ -103,19 +103,36 @@ public class MyApplication: Application {
     let contentView = TabOverview().createTabHandler { createTab() }
     let box = Box(horizontal: false)
     _ = contentView.add(
-      box.append(
-        HeaderBar().packStart(helloButton()).titleWidget(TitleBarWidget("Title", "Subtitle"))
-          .packEnd(Button(icon: .default(icon: .tabNew)).handler { _ = createTab() }).packEnd(
-            TabButton(view: tabView).handler { contentView.showOverview() }
-          )
-      ).append(tabView.append(title: "Initial View", self.toastOverlay(win: win))).insert(
-        TabBar(view: tabView),
-        at: 1
-      ),
+      ToolbarView(box.append(tabView.append(title: "Initial View", self.toastOverlay(win: win))))
+        .addTopBar(
+          HeaderBar().packStart(helloButton()).titleWidget(TitleBarWidget("Title", "Subtitle"))
+            .packEnd(Button(icon: .default(icon: .tabNew)).handler { _ = createTab() }).packEnd(
+              TabButton(view: tabView).handler { contentView.showOverview() }
+            )
+        ).addTopBar(TabBar(view: tabView)).topBarStyle(.raisedBorder),
       view: tabView
     )
-    win.setChild(contentView)
+    let listBox = ListBox()
+    let splitView = NavigationSplitView().content(
+      NavigationView().add(contentView, title: "Test").add(
+        ToolbarView(StatusPage().title("Navigation View")).addTopBar(HeaderBar()),
+        title: "Navigation Page"
+      ),
+      title: "Test"
+    ).sidebar(
+      ToolbarView(
+        listBox.append(Label("Hello").halign(.start).padding()).append(
+          Label("World").halign(.start).padding()
+        ).sidebarStyle().handler { print(listBox.getSelectedRow()) }
+      ).addTopBar((HeaderBar())),
+      title: "Sidebar"
+    )
+    win.setChild(splitView)
     win.setDefaultSize(width: 700, height: 500)
+    win.observeHide {
+      print("Close Window")
+      return false
+    }
     return win
   }
 
@@ -157,7 +174,12 @@ public class MyApplication: Application {
                   }
                 }.padding()
               )
-            ).addRow(ActionRow(title: "Row 2", subtitle: "Description"))
+            ).addRow(ActionRow(title: "Row 2", subtitle: "Description")).addRow(
+              SwitchRow(title: "Switch Row", subtitle: "Description")
+            ).addRow(
+              SpinRow(title: "Spin Row", subtitle: "Description", min: 0, max: 10, step: 0.5)
+                .configuration(min: -10, max: 10, step: 2)
+            )
           )
         )
     )
