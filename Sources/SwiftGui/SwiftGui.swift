@@ -4,6 +4,7 @@ import GTUI
 
   public static func main() {
     let application = MyApplication()
+    application.addKeyboardShortcut("q".ctrl(), id: "quit") { application.quit() }
     application.run()
   }
 }
@@ -93,7 +94,7 @@ public class MyApplication: Application {
   }
 
   func createWindow() -> Window {
-    let win = Window(app: self)
+    let win = ApplicationWindow(app: self)
     let tabView = TabView()
     let createTab = {
       var tab: UInt64 = 0
@@ -133,6 +134,8 @@ public class MyApplication: Application {
       print("Close Window")
       return false
     }
+    win.addKeyboardShortcut("w".ctrl(), id: "close") { win.close() }
+    win.addKeyboardShortcut("n".ctrl(), id: "new") { self.createWindow().show() }
     return win
   }
 

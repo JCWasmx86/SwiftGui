@@ -8,6 +8,10 @@ static char **artificial_args = { "SwiftGui", NULL };
 static void
 application_on_activate_cb (void *, void *);
 static void
+application_on_action_cb (void *, const char *, void *);
+static void
+application_window_on_action_cb (void *, const char *, void *);
+static void
 banner_on_click_cb (void *, void *);
 static void
 button_on_click_cb (void *, void *);
@@ -56,6 +60,84 @@ gtui_quit_application (uint64_t ptr)
   g_application_quit (G_APPLICATION (app));
 }
 
+typedef struct
+{
+  uint64_t    ptr;
+  uint64_t    self;
+  const char *id;
+} CallbackData;
+
+static void
+gtui_application_run_action_handler (gpointer user_data)
+{
+  CallbackData *data = (CallbackData *)user_data;
+  application_on_action_cb (data->ptr, data->id, data->self);
+}
+
+static void
+gtui_application_add_keyboard_shortcut (uint64_t    ptr,
+                                        uint64_t    self,
+                                        const char *shortcut,
+                                        const char *id,
+                                        const char *full_id)
+{
+  g_assert_nonnull (ptr);
+  AdwApplication *app = ADW_APPLICATION ((void *)ptr);
+  GSimpleAction  *action = g_simple_action_new (id, NULL);
+
+  CallbackData *data = g_new0 (CallbackData, 1);
+  data->ptr = ptr;
+  data->self = self;
+  data->id = id;
+  g_signal_connect_data (action,
+                         "activate",
+                         G_CALLBACK (gtui_application_run_action_handler),
+                         (gpointer)data,
+                         (GDestroyNotify)g_free,
+                         G_CONNECT_SWAPPED);
+
+  g_action_map_add_action (app, action);
+  const char *shortcuts[] = { shortcut, NULL };
+  gtk_application_set_accels_for_action (app, full_id, shortcuts);
+}
+
+static void
+gtui_application_window_run_action_handler (gpointer user_data)
+{
+  CallbackData *data = (CallbackData *)user_data;
+  application_window_on_action_cb (data->ptr, data->id, data->self);
+}
+
+static void
+gtui_application_window_add_keyboard_shortcut (uint64_t    ptr,
+                                               uint64_t    self,
+                                               uint64_t    app_ptr,
+                                               const char *shortcut,
+                                               const char *id,
+                                               const char *full_id)
+{
+  g_assert_nonnull (ptr);
+  g_assert_nonnull (app_ptr);
+  AdwApplicationWindow *window = ADW_APPLICATION_WINDOW ((void *)ptr);
+  AdwApplication       *app = ADW_APPLICATION ((void *)app_ptr);
+  GSimpleAction        *action = g_simple_action_new (id, NULL);
+
+  CallbackData *data = g_new0 (CallbackData, 1);
+  data->ptr = ptr;
+  data->self = self;
+  data->id = id;
+  g_signal_connect_data (action,
+                         "activate",
+                         G_CALLBACK (gtui_application_window_run_action_handler),
+                         (gpointer)data,
+                         (GDestroyNotify)g_free,
+                         G_CONNECT_SWAPPED);
+
+  g_action_map_add_action (window, action);
+  const char *shortcuts[] = { shortcut, NULL };
+  gtk_application_set_accels_for_action (app, full_id, shortcuts);
+}
+
 static uint64_t
 gtui_create_window (uint64_t app)
 {
@@ -68,6 +150,18 @@ gtui_create_window (uint64_t app)
   g_value_init_from_instance (&value, application);
   AdwWindow *window = adw_window_new ();
   g_object_set_property (window, "application", &value);
+  return (uint64_t)window;
+}
+
+static uint64_t
+gtui_create_application_window (uint64_t app)
+{
+  g_assert_nonnull (app);
+  GtkApplication *application = GTK_APPLICATION (app);
+
+  g_assert (G_IS_APPLICATION (application));
+
+  AdwApplicationWindow *window = adw_application_window_new (application);
   return (uint64_t)window;
 }
 
@@ -89,8 +183,8 @@ static void
 gtui_show_window (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_present (GTK_WINDOW (window));
 }
 
@@ -226,6 +320,17 @@ gtui_window_set_child (uint64_t window, uint64_t widget)
   g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
 
   adw_window_set_content (ADW_WINDOW (window), GTK_WIDGET (widget));
+}
+
+static void
+gtui_application_window_set_child (uint64_t window, uint64_t widget)
+{
+  g_assert_nonnull (window);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_APPLICATION_WINDOW (ADW_APPLICATION_WINDOW ((void *)window)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_application_window_set_content (ADW_APPLICATION_WINDOW (window), GTK_WIDGET (widget));
 }
 
 static void
@@ -1755,8 +1860,8 @@ static void
 gtui_window_maximize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_maximize (GTK_WINDOW (window));
 }
 
@@ -1764,8 +1869,8 @@ static void
 gtui_window_unmaximize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_unmaximize (GTK_WINDOW (window));
 }
 
@@ -1773,8 +1878,8 @@ static gboolean
 gtui_window_is_maximized (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   return gtk_window_is_maximized (GTK_WINDOW (window));
 }
 
@@ -1782,8 +1887,8 @@ static void
 gtui_window_enter_fullscreen (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_fullscreen (GTK_WINDOW (window));
 }
 
@@ -1791,8 +1896,8 @@ static void
 gtui_window_leave_fullscreen (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_unfullscreen (GTK_WINDOW (window));
 }
 
@@ -1800,8 +1905,8 @@ static void
 gtui_window_minimize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_minimize (GTK_WINDOW (window));
 }
 
@@ -1809,8 +1914,8 @@ static void
 gtui_window_close (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (GTK_IS_WINDOW (GTK_WINDOW (window)));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_close (GTK_WINDOW (window));
 }
 
@@ -1818,8 +1923,8 @@ static void
 gtui_window_set_default_size (uint64_t ptr, int width, int height)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_default_size (GTK_WINDOW (window), width, height);
 }
 
@@ -1827,8 +1932,8 @@ static void
 gtui_window_set_resizability (uint64_t ptr, gboolean setting)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_resizable (GTK_WINDOW (window), setting);
 }
 
@@ -1836,8 +1941,8 @@ static void
 gtui_window_set_deletability (uint64_t ptr, gboolean setting)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_deletable (GTK_WINDOW (window), setting);
 }
 
