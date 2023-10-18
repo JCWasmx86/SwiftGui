@@ -83,9 +83,9 @@ public class MyApplication: Application {
                     if banner.isRevealed { banner.hide() } else { banner.show() }
                   }.hexpand()
                 )
-              ).append(TextView()).append(TextDropDown().append("FOO").append("BAR")).frame(
-                maxSize: 400
-              )
+              ).append(CheckButton("Test").handler { print("Toggle") }).append(TextView()).append(
+                TextDropDown().append("FOO").append("BAR")
+              ).frame(maxSize: 400)
             ).append(carousel.addIndicatorDots()).padding().vexpand()
           )
       )

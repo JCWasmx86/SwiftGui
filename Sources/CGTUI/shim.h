@@ -16,6 +16,8 @@ banner_on_click_cb (void *, void *);
 static void
 button_on_click_cb (void *, void *);
 static void
+checkbutton_on_toggle_cb (void *, void *);
+static void
 entryrow_on_submit_cb (void *, void *);
 static void
 messagedialog_on_click_cb (void *, void *, void *);
@@ -425,7 +427,7 @@ gtui_create_button (const char *label)
   return (uint64_t)gtk_button_new_with_label (strdup (label));
 }
 
-static uint64_t
+static void
 gtui_button_init_signals (uint64_t btn, uint64_t data)
 {
   GtkButton *button;
@@ -458,6 +460,54 @@ gtui_button_set_label (uint64_t button, const char *label)
   g_assert (GTK_IS_BUTTON (GTK_BUTTON ((void *)button)));
 
   gtk_button_set_label (button, strdup (label));
+}
+
+static uint64_t
+gtui_create_checkbutton (const char *label)
+{
+  return (uint64_t)gtk_check_button_new_with_label (label);
+}
+
+static uint64_t
+gtui_checkbutton_init_signals (uint64_t btn, uint64_t data)
+{
+  GtkCheckButton *button;
+
+  g_assert_nonnull (btn);
+  g_assert_nonnull (data);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)btn)));
+
+  button = GTK_CHECK_BUTTON (btn);
+  swift_retain (data);
+  g_signal_connect (button, "toggled", G_CALLBACK (checkbutton_on_toggle_cb), (void *)data);
+}
+
+static void
+gtui_checkbutton_set_label (uint64_t btn, const char *label)
+{
+  g_assert_nonnull (btn);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)btn)));
+
+  gtk_check_button_set_label (btn, label);
+}
+
+static void
+gtui_checkbutton_set_active (uint64_t button, gboolean active)
+{
+  g_assert_nonnull (button);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)button)));
+
+  gtk_check_button_set_active (button, active);
+}
+
+static void
+gtui_checkbutton_set_inconsistent (uint64_t button, gboolean inconsistent)
+{
+  g_assert_nonnull (button);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)button)));
+
+  gtk_check_button_set_inconsistent (button, inconsistent);
 }
 
 static uint64_t
