@@ -14,6 +14,7 @@ public class Window: NativePeer {
     }
     self.initSignals()
   }
+  required convenience public init?(application: Application?) { self.init(app: application) }
 
   override init() { super.init() }
 

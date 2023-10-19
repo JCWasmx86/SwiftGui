@@ -10,6 +10,9 @@ public class ApplicationWindow: Window {
     self.nativePtr = gtui_create_application_window(app.nativePtr)
     self.initSignals()
   }
+  public required convenience init?(application: Application?) {
+    if let application { self.init(app: application) } else { return nil }
+  }
 
   public override func setChild(_ widget: NativeWidgetPeer) {
     gtui_application_window_set_child(self.nativePtr, widget.nativePtr)
