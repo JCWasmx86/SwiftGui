@@ -8,6 +8,7 @@ public class ApplicationWindow: Window {
     self.app = app
     super.init()
     self.nativePtr = gtui_create_application_window(app.nativePtr)
+    self.initSignals()
   }
 
   public override func setChild(_ widget: NativeWidgetPeer) {
