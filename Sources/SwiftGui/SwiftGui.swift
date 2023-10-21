@@ -82,9 +82,9 @@ public class MyApplication: Application {
                     if banner.isRevealed { banner.hide() } else { banner.show() }
                   }.hexpand()
                 )
-              ).append(TextView()).append(TextDropDown().append("FOO").append("BAR")).frame(
-                maxSize: 400
-              )
+              ).append(CheckButton("Test").handler { print("Toggle") }).append(TextView()).append(
+                TextDropDown().append("FOO").append("BAR")
+              ).frame(maxSize: 400)
             ).append(carousel.addIndicatorDots()).padding().vexpand()
           )
       )
@@ -93,7 +93,7 @@ public class MyApplication: Application {
   }
 
   func createWindow() -> Window {
-    let win = Window(app: self)
+    let win = ApplicationWindow(app: self)
     let tabView = TabView()
     let createTab = {
       var tab: UInt64 = 0
@@ -124,7 +124,23 @@ public class MyApplication: Application {
         listBox.append(Label("Hello").halign(.start).padding()).append(
           Label("World").halign(.start).padding()
         ).sidebarStyle().handler { print(listBox.getSelectedRow()) }
-      ).addTopBar((HeaderBar())),
+      ).addTopBar(
+        (HeaderBar().append(
+          MenuButton(icon: .default(icon: .openMenu)).menu { menu in
+            _ = menu.append("New Window", id: "win.new").append("Test Closure", app: self) {
+              print("Hello, world!")
+            }.append(
+              "More",
+              submenu: .init().append("Close Window", window: win, shortcut: "w".ctrl()) {
+                win.close()
+              }
+            ).append(
+              "Quit",
+              section: .init().append("Quit", app: self, shortcut: "q".ctrl()) { self.quit() }
+            )
+          }
+        ))
+      ),
       title: "Sidebar"
     )
     win.setChild(splitView)
@@ -133,6 +149,7 @@ public class MyApplication: Application {
       print("Close Window")
       return false
     }
+    win.addKeyboardShortcut("n".ctrl(), id: "new") { self.createWindow().show() }
     return win
   }
 

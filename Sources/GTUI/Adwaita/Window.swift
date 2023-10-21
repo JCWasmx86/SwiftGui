@@ -12,9 +12,9 @@ public class Window: NativePeer {
     } else {
       self.nativePtr = gtui_create_window(0)
     }
-    let selfAddr = unsafeBitCast(self, to: UInt64.self)
-    gtui_window_init_signals(self.nativePtr, selfAddr)
+    self.initSignals()
   }
+  required convenience public init?(application: Application?) { self.init(app: application) }
 
   override init() { super.init() }
 
@@ -55,6 +55,11 @@ public class Window: NativePeer {
   public func observeHide(_ run: @escaping () -> Bool) { self.closeHandler = run }
 
   func onHide() -> Bool { self.closeHandler?() ?? false }
+
+  func initSignals() {
+    let selfAddr = unsafeBitCast(self, to: UInt64.self)
+    gtui_window_init_signals(self.nativePtr, selfAddr)
+  }
 }
 
 @_cdecl("window_close_cb") func window_close_cb(

@@ -8,9 +8,15 @@ static char **artificial_args = { "SwiftGui", NULL };
 static void
 application_on_activate_cb (void *, void *);
 static void
+application_on_action_cb (void *, const char *, void *);
+static void
+application_window_on_action_cb (void *, const char *, void *);
+static void
 banner_on_click_cb (void *, void *);
 static void
 button_on_click_cb (void *, void *);
+static void
+checkbutton_on_toggle_cb (void *, void *);
 static void
 entryrow_on_submit_cb (void *, void *);
 static void
@@ -56,6 +62,84 @@ gtui_quit_application (uint64_t ptr)
   g_application_quit (G_APPLICATION (app));
 }
 
+typedef struct
+{
+  uint64_t    ptr;
+  uint64_t    self;
+  const char *id;
+} CallbackData;
+
+static void
+gtui_application_run_action_handler (gpointer user_data)
+{
+  CallbackData *data = (CallbackData *)user_data;
+  application_on_action_cb (data->ptr, data->id, data->self);
+}
+
+static void
+gtui_application_add_keyboard_shortcut (uint64_t    ptr,
+                                        uint64_t    self,
+                                        const char *shortcut,
+                                        const char *id,
+                                        const char *full_id)
+{
+  g_assert_nonnull (ptr);
+  AdwApplication *app = ADW_APPLICATION ((void *)ptr);
+  GSimpleAction  *action = g_simple_action_new (id, NULL);
+
+  CallbackData *data = g_new0 (CallbackData, 1);
+  data->ptr = ptr;
+  data->self = self;
+  data->id = id;
+  g_signal_connect_data (action,
+                         "activate",
+                         G_CALLBACK (gtui_application_run_action_handler),
+                         (gpointer)data,
+                         (GDestroyNotify)g_free,
+                         G_CONNECT_SWAPPED);
+
+  g_action_map_add_action (app, action);
+  const char *shortcuts[] = { shortcut, NULL };
+  gtk_application_set_accels_for_action (app, full_id, shortcuts);
+}
+
+static void
+gtui_application_window_run_action_handler (gpointer user_data)
+{
+  CallbackData *data = (CallbackData *)user_data;
+  application_window_on_action_cb (data->ptr, data->id, data->self);
+}
+
+static void
+gtui_application_window_add_keyboard_shortcut (uint64_t    ptr,
+                                               uint64_t    self,
+                                               uint64_t    app_ptr,
+                                               const char *shortcut,
+                                               const char *id,
+                                               const char *full_id)
+{
+  g_assert_nonnull (ptr);
+  g_assert_nonnull (app_ptr);
+  AdwApplicationWindow *window = ADW_APPLICATION_WINDOW ((void *)ptr);
+  AdwApplication       *app = ADW_APPLICATION ((void *)app_ptr);
+  GSimpleAction        *action = g_simple_action_new (id, NULL);
+
+  CallbackData *data = g_new0 (CallbackData, 1);
+  data->ptr = ptr;
+  data->self = self;
+  data->id = id;
+  g_signal_connect_data (action,
+                         "activate",
+                         G_CALLBACK (gtui_application_window_run_action_handler),
+                         (gpointer)data,
+                         (GDestroyNotify)g_free,
+                         G_CONNECT_SWAPPED);
+
+  g_action_map_add_action (window, action);
+  const char *shortcuts[] = { shortcut, NULL };
+  gtk_application_set_accels_for_action (app, full_id, shortcuts);
+}
+
 static uint64_t
 gtui_create_window (uint64_t app)
 {
@@ -68,6 +152,18 @@ gtui_create_window (uint64_t app)
   g_value_init_from_instance (&value, application);
   AdwWindow *window = adw_window_new ();
   g_object_set_property (window, "application", &value);
+  return (uint64_t)window;
+}
+
+static uint64_t
+gtui_create_application_window (uint64_t app)
+{
+  g_assert_nonnull (app);
+  GtkApplication *application = GTK_APPLICATION (app);
+
+  g_assert (G_IS_APPLICATION (application));
+
+  AdwApplicationWindow *window = adw_application_window_new (application);
   return (uint64_t)window;
 }
 
@@ -89,8 +185,8 @@ static void
 gtui_show_window (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_present (GTK_WINDOW (window));
 }
 
@@ -229,6 +325,17 @@ gtui_window_set_child (uint64_t window, uint64_t widget)
 }
 
 static void
+gtui_application_window_set_child (uint64_t window, uint64_t widget)
+{
+  g_assert_nonnull (window);
+  g_assert_nonnull (widget);
+  g_assert (ADW_IS_APPLICATION_WINDOW (ADW_APPLICATION_WINDOW ((void *)window)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  adw_application_window_set_content (ADW_APPLICATION_WINDOW (window), GTK_WIDGET (widget));
+}
+
+static void
 gtui_window_set_transient_for (uint64_t window, uint64_t parent)
 {
   g_assert_nonnull (window);
@@ -320,7 +427,7 @@ gtui_create_button (const char *label)
   return (uint64_t)gtk_button_new_with_label (strdup (label));
 }
 
-static uint64_t
+static void
 gtui_button_init_signals (uint64_t btn, uint64_t data)
 {
   GtkButton *button;
@@ -353,6 +460,54 @@ gtui_button_set_label (uint64_t button, const char *label)
   g_assert (GTK_IS_BUTTON (GTK_BUTTON ((void *)button)));
 
   gtk_button_set_label (button, strdup (label));
+}
+
+static uint64_t
+gtui_create_checkbutton (const char *label)
+{
+  return (uint64_t)gtk_check_button_new_with_label (label);
+}
+
+static uint64_t
+gtui_checkbutton_init_signals (uint64_t btn, uint64_t data)
+{
+  GtkCheckButton *button;
+
+  g_assert_nonnull (btn);
+  g_assert_nonnull (data);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)btn)));
+
+  button = GTK_CHECK_BUTTON (btn);
+  swift_retain (data);
+  g_signal_connect (button, "toggled", G_CALLBACK (checkbutton_on_toggle_cb), (void *)data);
+}
+
+static void
+gtui_checkbutton_set_label (uint64_t btn, const char *label)
+{
+  g_assert_nonnull (btn);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)btn)));
+
+  gtk_check_button_set_label (btn, label);
+}
+
+static void
+gtui_checkbutton_set_active (uint64_t button, gboolean active)
+{
+  g_assert_nonnull (button);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)button)));
+
+  gtk_check_button_set_active (button, active);
+}
+
+static void
+gtui_checkbutton_set_inconsistent (uint64_t button, gboolean inconsistent)
+{
+  g_assert_nonnull (button);
+  g_assert (GTK_IS_CHECK_BUTTON (GTK_CHECK_BUTTON ((void *)button)));
+
+  gtk_check_button_set_inconsistent (button, inconsistent);
 }
 
 static uint64_t
@@ -1569,6 +1724,127 @@ gtui_buttoncontent_set_icon (uint64_t button, const char *icon)
 }
 
 static uint64_t
+gtui_create_menubutton ()
+{
+  return (uint64_t)gtk_menu_button_new ();
+}
+
+static void
+gtui_menubutton_set_menu (uint64_t button, uint64_t menu)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (menu);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+  g_assert (G_IS_MENU (G_MENU ((void *)menu)));
+
+  gtk_menu_button_set_menu_model (button, menu);
+}
+
+static void
+gtui_menubutton_set_child (uint64_t button, uint64_t widget)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_menu_button_set_child (button, widget);
+}
+
+static void
+gtui_menubutton_set_label (uint64_t button, const char *label)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+
+  gtk_menu_button_set_label (button, strdup (label));
+}
+
+static uint64_t
+gtui_create_menu ()
+{
+  return (uint64_t)g_menu_new ();
+}
+
+static void
+gtui_menu_append (uint64_t menu, const char *label, const char *action)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (action);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_append (menu, label, action);
+}
+
+static void
+gtui_menu_prepend (uint64_t menu, const char *label, const char *action)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (action);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_prepend (menu, label, action);
+}
+
+static void
+gtui_menu_append_section (uint64_t menu, uint64_t section)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (section);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (section)));
+
+  g_menu_append_section (menu, NULL, section);
+}
+
+static void
+gtui_menu_prepend_section (uint64_t menu, uint64_t section)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (section);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (section)));
+
+  g_menu_prepend_section (menu, NULL, section);
+}
+
+static void
+gtui_menu_append_submenu (uint64_t menu, const char *label, uint64_t submenu)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (submenu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (submenu)));
+
+  g_menu_append_submenu (menu, label, submenu);
+}
+
+static void
+gtui_menu_prepend_submenu (uint64_t menu, const char *label, uint64_t submenu)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (submenu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (submenu)));
+
+  g_menu_prepend_submenu (menu, label, submenu);
+}
+
+static void
+gtui_menu_remove (uint64_t menu, int position)
+{
+  g_assert_nonnull (menu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_remove (menu, position);
+}
+
+static uint64_t
 gtui_create_stack ()
 {
   return (uint64_t)gtk_stack_new ();
@@ -1755,8 +2031,8 @@ static void
 gtui_window_maximize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_maximize (GTK_WINDOW (window));
 }
 
@@ -1764,8 +2040,8 @@ static void
 gtui_window_unmaximize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_unmaximize (GTK_WINDOW (window));
 }
 
@@ -1773,8 +2049,8 @@ static gboolean
 gtui_window_is_maximized (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   return gtk_window_is_maximized (GTK_WINDOW (window));
 }
 
@@ -1782,8 +2058,8 @@ static void
 gtui_window_enter_fullscreen (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_fullscreen (GTK_WINDOW (window));
 }
 
@@ -1791,8 +2067,8 @@ static void
 gtui_window_leave_fullscreen (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_unfullscreen (GTK_WINDOW (window));
 }
 
@@ -1800,8 +2076,8 @@ static void
 gtui_window_minimize (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_minimize (GTK_WINDOW (window));
 }
 
@@ -1809,8 +2085,8 @@ static void
 gtui_window_close (uint64_t ptr)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (GTK_IS_WINDOW (GTK_WINDOW (window)));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_close (GTK_WINDOW (window));
 }
 
@@ -1818,8 +2094,8 @@ static void
 gtui_window_set_default_size (uint64_t ptr, int width, int height)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_default_size (GTK_WINDOW (window), width, height);
 }
 
@@ -1827,8 +2103,8 @@ static void
 gtui_window_set_resizability (uint64_t ptr, gboolean setting)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_resizable (GTK_WINDOW (window), setting);
 }
 
@@ -1836,8 +2112,8 @@ static void
 gtui_window_set_deletability (uint64_t ptr, gboolean setting)
 {
   g_assert_nonnull (ptr);
-  AdwWindow *window = (void *)ptr;
-  g_assert (ADW_IS_WINDOW (window));
+  GtkWindow *window = (void *)ptr;
+  g_assert (GTK_IS_WINDOW (window));
   gtk_window_set_deletable (GTK_WINDOW (window), setting);
 }
 

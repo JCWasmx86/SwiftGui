@@ -6,6 +6,7 @@ public class AboutWindow: Window {
     self.nativePtr = gtui_create_aboutwindow()
     if let parent { self.setParent(parent) }
   }
+  public required convenience init?(application: Application?) { self.init() }
 
   public func generalData(title: String, icon: Icon, developer: String, version: String)
     -> AboutWindow
