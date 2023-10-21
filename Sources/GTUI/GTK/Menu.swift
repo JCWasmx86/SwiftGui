@@ -13,15 +13,16 @@ public class Menu: NativePeer {
     app: Application? = nil,
     win: ApplicationWindow? = nil,
     id: String? = nil,
+    shortcut: String = "",
     handler: (() -> Void)? = nil
   ) -> String {
     let label = label.filter { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "." }
     if let handler, let app {
-      app.addKeyboardShortcut("", id: id ?? label, handler: handler)
+      app.addKeyboardShortcut(shortcut, id: id ?? label, handler: handler)
       return "app.\(label)"
     }
     if let handler, let win {
-      win.addKeyboardShortcut("", id: id ?? label, handler: handler)
+      win.addKeyboardShortcut(shortcut, id: id ?? label, handler: handler)
       return "win.\(label)"
     }
     return id ?? ""
@@ -34,15 +35,23 @@ public class Menu: NativePeer {
     return self
   }
 
-  public func append(_ label: String, app: Application, handler: @escaping () -> Void) -> Menu {
-    let id = initAction(label, app: app, handler: handler)
+  public func append(
+    _ label: String,
+    app: Application,
+    shortcut: String = "",
+    handler: @escaping () -> Void
+  ) -> Menu {
+    let id = initAction(label, app: app, shortcut: shortcut, handler: handler)
     return self.append(label, id: id)
   }
 
-  public func append(_ label: String, window: ApplicationWindow, handler: @escaping () -> Void)
-    -> Menu
-  {
-    let id = initAction(label, win: window, handler: handler)
+  public func append(
+    _ label: String,
+    window: ApplicationWindow,
+    shortcut: String = "",
+    handler: @escaping () -> Void
+  ) -> Menu {
+    let id = initAction(label, win: window, shortcut: shortcut, handler: handler)
     return self.append(label, id: id)
   }
 
@@ -53,15 +62,23 @@ public class Menu: NativePeer {
     return self
   }
 
-  public func prepend(_ label: String, app: Application, handler: @escaping () -> Void) -> Menu {
-    let id = initAction(label, app: app, handler: handler)
+  public func prepend(
+    _ label: String,
+    app: Application,
+    shortcut: String = "",
+    handler: @escaping () -> Void
+  ) -> Menu {
+    let id = initAction(label, app: app, shortcut: shortcut, handler: handler)
     return self.prepend(label, id: id)
   }
 
-  public func prepend(_ label: String, window: ApplicationWindow, handler: @escaping () -> Void)
-    -> Menu
-  {
-    let id = initAction(label, win: window, handler: handler)
+  public func prepend(
+    _ label: String,
+    window: ApplicationWindow,
+    shortcut: String = "",
+    handler: @escaping () -> Void
+  ) -> Menu {
+    let id = initAction(label, win: window, shortcut: shortcut, handler: handler)
     return self.prepend(label, id: id)
   }
 

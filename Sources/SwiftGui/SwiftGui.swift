@@ -4,7 +4,6 @@ import GTUI
 
   public static func main() {
     let application = MyApplication()
-    application.addKeyboardShortcut("q".ctrl(), id: "quit") { application.quit() }
     application.run()
   }
 }
@@ -130,9 +129,14 @@ public class MyApplication: Application {
           MenuButton(icon: .default(icon: .openMenu)).menu { menu in
             _ = menu.append("New Window", id: "win.new").append("Test Closure", app: self) {
               print("Hello, world!")
-            }.append("More", submenu: .init().append("Close Window", id: "win.close")).append(
+            }.append(
+              "More",
+              submenu: .init().append("Close Window", window: win, shortcut: "w".ctrl()) {
+                win.close()
+              }
+            ).append(
               "Quit",
-              section: .init().append("Quit", id: "app.quit")
+              section: .init().append("Quit", app: self, shortcut: "q".ctrl()) { self.quit() }
             )
           }
         ))
@@ -145,7 +149,6 @@ public class MyApplication: Application {
       print("Close Window")
       return false
     }
-    win.addKeyboardShortcut("w".ctrl(), id: "close") { win.close() }
     win.addKeyboardShortcut("n".ctrl(), id: "new") { self.createWindow().show() }
     return win
   }
