@@ -125,7 +125,18 @@ public class MyApplication: Application {
         listBox.append(Label("Hello").halign(.start).padding()).append(
           Label("World").halign(.start).padding()
         ).sidebarStyle().handler { print(listBox.getSelectedRow()) }
-      ).addTopBar((HeaderBar())),
+      ).addTopBar(
+        (HeaderBar().append(
+          MenuButton(icon: .default(icon: .openMenu)).menu { menu in
+            _ = menu.append("New Window", id: "win.new").append("Test Closure", app: self) {
+              print("Hello, world!")
+            }.append("More", submenu: .init().append("Close Window", id: "win.close")).append(
+              "Quit",
+              section: .init().append("Quit", id: "app.quit")
+            )
+          }
+        ))
+      ),
       title: "Sidebar"
     )
     win.setChild(splitView)

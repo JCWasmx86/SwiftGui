@@ -1724,6 +1724,127 @@ gtui_buttoncontent_set_icon (uint64_t button, const char *icon)
 }
 
 static uint64_t
+gtui_create_menubutton ()
+{
+  return (uint64_t)gtk_menu_button_new ();
+}
+
+static void
+gtui_menubutton_set_menu (uint64_t button, uint64_t menu)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (menu);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+  g_assert (G_IS_MENU (G_MENU ((void *)menu)));
+
+  gtk_menu_button_set_menu_model (button, menu);
+}
+
+static void
+gtui_menubutton_set_child (uint64_t button, uint64_t widget)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (widget);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+  g_assert (GTK_IS_WIDGET (GTK_WIDGET ((void *)widget)));
+
+  gtk_menu_button_set_child (button, widget);
+}
+
+static void
+gtui_menubutton_set_label (uint64_t button, const char *label)
+{
+  g_assert_nonnull (button);
+  g_assert_nonnull (label);
+  g_assert (GTK_IS_MENU_BUTTON (GTK_MENU_BUTTON ((void *)button)));
+
+  gtk_menu_button_set_label (button, strdup (label));
+}
+
+static uint64_t
+gtui_create_menu ()
+{
+  return (uint64_t)g_menu_new ();
+}
+
+static void
+gtui_menu_append (uint64_t menu, const char *label, const char *action)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (action);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_append (menu, label, action);
+}
+
+static void
+gtui_menu_prepend (uint64_t menu, const char *label, const char *action)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (action);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_prepend (menu, label, action);
+}
+
+static void
+gtui_menu_append_section (uint64_t menu, uint64_t section)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (section);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (section)));
+
+  g_menu_append_section (menu, NULL, section);
+}
+
+static void
+gtui_menu_prepend_section (uint64_t menu, uint64_t section)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (section);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (section)));
+
+  g_menu_prepend_section (menu, NULL, section);
+}
+
+static void
+gtui_menu_append_submenu (uint64_t menu, const char *label, uint64_t submenu)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (submenu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (submenu)));
+
+  g_menu_append_submenu (menu, label, submenu);
+}
+
+static void
+gtui_menu_prepend_submenu (uint64_t menu, const char *label, uint64_t submenu)
+{
+  g_assert_nonnull (menu);
+  g_assert_nonnull (label);
+  g_assert_nonnull (submenu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+  g_assert (G_IS_MENU (G_MENU (submenu)));
+
+  g_menu_prepend_submenu (menu, label, submenu);
+}
+
+static void
+gtui_menu_remove (uint64_t menu, int position)
+{
+  g_assert_nonnull (menu);
+  g_assert (G_IS_MENU (G_MENU (menu)));
+
+  g_menu_remove (menu, position);
+}
+
+static uint64_t
 gtui_create_stack ()
 {
   return (uint64_t)gtk_stack_new ();
